@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Textarea, Text, ScrollArea, Card } from '@mantine/core';
+import { Textarea, Text, ScrollArea, Divider } from '@mantine/core';
 import { ConversationProps } from '../Files';
-import usePostMessage, { IssueProps } from '../../../../../hooks/SendMessage';
+import usePostMessage from '../../../../../hooks/SendMessage';
+import { Issues } from './Issues/Issues';
 
 type InputProps = {
   message: string;
@@ -17,35 +18,8 @@ function Input({ message, key }: InputProps) {
   return (
     <div key={key}>
       <Text style={{ whiteSpace: 'pre-wrap' }}>{message}</Text>
-      <hr
-        style={{
-          border: 0,
-          height: 0,
-          borderTop: '1px solid rgba(0, 0, 0, 0.1)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
-        }}
-      />
+      <Divider my="md" />
     </div>
-  );
-}
-
-function Issue(issue: IssueProps) {
-  return (
-    <Card shadow="sm" radius="md" withBorder style={{ marginBottom: 10 }}>
-      <Text
-        size="sm"
-        c="dimmed"
-        style={{
-          whiteSpace: 'pre-wrap',
-          overflowWrap: 'break-word',
-          maxWidth: '100%',
-          wordBreak: 'break-word',
-          wordWrap: 'break-word',
-        }}
-      >
-        {JSON.stringify(issue, null, 2)}
-      </Text>
-    </Card>
   );
 }
 
@@ -87,9 +61,7 @@ export function MainChat({ repoURL }: ConversationProps) {
     if (data && data.length > 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        ...data.map((issue, index) => (
-          <Issue key={counter + '-' + index} {...issue} />
-        )),
+        <Issues key={counter} data={data} />,
       ]);
       setCounter((prevCounter) => prevCounter + 1);
     }

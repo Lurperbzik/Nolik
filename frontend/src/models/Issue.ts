@@ -1,9 +1,9 @@
-interface IssueComment {
+export interface IssueComment {
   author: string;
   body: string;
 }
 
-interface IssueJSON {
+export interface IssueJSON {
   distance: number;
   issue: {
     number: number;
@@ -18,7 +18,7 @@ interface IssueJSON {
 }
 
 export class Issue {
-  public distance: number;
+  public distance: string;
   public number: number;
   public title: string;
   public body: string;
@@ -28,7 +28,7 @@ export class Issue {
   public comments: IssueComment[];
 
   constructor(
-    distance: number,
+    distance: string,
     number: number,
     title: string,
     body: string,
@@ -49,7 +49,7 @@ export class Issue {
 
   static fromJSON(json: IssueJSON): Issue {
     return new Issue(
-      json.distance,
+      json.distance.toFixed(2),
       json.issue.number,
       json.issue.title,
       json.issue.body,

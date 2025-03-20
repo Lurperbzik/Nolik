@@ -1,25 +1,12 @@
 import { useState } from 'react';
+import { IssueJSON } from '../models/Issue';
 
 type MessagePayload = {
   url: string;
   message: string;
 };
 
-export type IssueProps = {
-  distance: number;
-  issue: {
-    number: number;
-    title: string;
-    body: string;
-    state: string;
-    stateReason: string;
-    url: string;
-    author: string;
-    comments: string[];
-  };
-};
-
-type MessageResponse = IssueProps[];
+type MessageResponse = IssueJSON[];
 
 const usePostMessage = ({ url, message }: MessagePayload) => {
   const [loading, setLoading] = useState(false);
