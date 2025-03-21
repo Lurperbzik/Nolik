@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from modules.api_clients.github_client.github_client import GithubClient
 from modules.api_clients.model import Client, ClientException, RepositoryIssues
+from modules.milvus.milvus_client import milvus_client
 
 class ApiClient:
     def __init__(self, client: str, token: str):
@@ -14,14 +15,23 @@ class ApiClient:
     async def fetch_issues(self, owner, repo) -> RepositoryIssues:
         if self.client.name == "github":
             try:
-                data = await GithubClient(token=self.token, owner=owner, repo=repo).fetch_repo_data()
+                exists = milvus_client.get_collections()
+                github = GithubClient(token=self.token, owner=owner, repo=repo)
+                repo = await github.validate_repo()
+                
+                if repo in exists.data:
+                    raise HTTPException(status_code=400, detail="Repository already exists in Milvus")
+               
+                data = await github.fetch_repo_data()
                 RepositoryIssues.model_validate(data)
                 return data
             
             except ClientException as e:
                 raise HTTPException(status_code=e.status_code, detail=str(e))
-            except Exception:
-                raise HTTPException(status_code=500, detail="Internal server error")
+            except HTTPException as e:
+                raise e
+            except Exception as e:
+                raise HTTPException(status_code=500, detail="Internal Server Error")
             
         else:
             raise HTTPException(status_code=400, detail="Client not supported")
