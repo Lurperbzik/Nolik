@@ -1,15 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { Textarea, Text, ScrollArea, Divider } from '@mantine/core';
-import { ConversationProps } from '../Files';
-import usePostMessage from '../../../../../hooks/SendMessage';
+import usePostMessage from '../../services/SendMessage';
 import { Issues } from './Issues/Issues';
 
-type InputProps = {
+interface ConversationProps {
+  repoURL: string;
+  style?: React.CSSProperties;
+}
+
+type UserInputProps = {
   message: string;
   key: number;
 };
 
-function Input({ message, key }: InputProps) {
+function UserInput({ message, key }: UserInputProps) {
   message = message.trim();
   if (message === '') {
     return null;
@@ -41,7 +45,7 @@ export function MainChat({ repoURL }: ConversationProps) {
     } else if (event.key === 'Enter') {
       event.preventDefault();
 
-      const newMessage = Input({ message: text, key: counter });
+      const newMessage = UserInput({ message: text, key: counter });
       if (!newMessage) {
         return;
       }

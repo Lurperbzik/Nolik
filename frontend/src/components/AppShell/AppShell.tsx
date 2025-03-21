@@ -1,6 +1,7 @@
 import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Files } from './Navbar/Repositories/Files';
+import { Files } from './Files';
+
 export function AppBaseShell() {
   const [opened, { toggle }] = useDisclosure();
   const { Navlink, Conversation } = Files();

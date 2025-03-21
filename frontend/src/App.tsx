@@ -8,7 +8,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
+      <MantineProvider forceColorScheme="dark">
         <AppBaseShell />
       </MantineProvider>
     </QueryClientProvider>

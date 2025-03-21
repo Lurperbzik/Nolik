@@ -1,36 +1,13 @@
 import { useState, useEffect } from 'react';
-import { MainChat } from './MainChat/MainChat';
-import { Repositories } from './RepoContent/RepoContent';
-import { useCollections } from '../../../../hooks/Collections';
+import { MainChat } from '../MainChat/MainChat';
+import { useCollections } from '../../services/Collections';
+import { RepositoryNavbar } from '../RepositoryNavbar/RepositoryNavbar';
 
 export type RepoProps = {
   name: string;
-  plataform: string;
+  platform: string;
   url: string;
 };
-
-export type NavLinkProps = {
-  repos: RepoProps[] | undefined;
-  active: string;
-  setActive: (value: string) => void;
-};
-
-function Navlink({ repos, active, setActive }: NavLinkProps) {
-  return <Repositories repos={repos} active={active} setActive={setActive} />;
-}
-
-export interface ConversationProps {
-  repoURL: string;
-  style?: React.CSSProperties;
-}
-
-function Conversation({ repoURL, style }: ConversationProps) {
-  return (
-    <div style={style}>
-      <MainChat key={repoURL} repoURL={repoURL} />
-    </div>
-  );
-}
 
 export function Files() {
   const [active, setActive] = useState('');
@@ -44,7 +21,7 @@ export function Files() {
   if (!isLoading && !error && data) {
     repos = data.map((repo) => ({
       name: repo.repo,
-      plataform: repo.plataform,
+      platform: repo.plataform,
       url: repo.url,
     }));
   }
@@ -60,7 +37,6 @@ export function Files() {
         (element) => element.repoURL === repo.url,
       );
       if (!exists) {
-        // Agregar nueva conversación con estilo oculto inicialmente
         setConversations((prev) => [
           ...prev,
           { repoURL: repo.url, style: { display: 'none' } },
@@ -81,13 +57,15 @@ export function Files() {
   }, [active]);
 
   return {
-    Navlink: <Navlink repos={repos} active={active} setActive={setActive} />,
+    Navlink: (
+      <RepositoryNavbar repos={repos} active={active} setActive={setActive} />
+    ),
     Conversation: conversations.map((conversation) => (
-      <Conversation
-        key={conversation.repoURL}
-        repoURL={conversation.repoURL}
-        style={conversation.style}
-      />
+      <>
+        <div key={conversation.repoURL} style={conversation.style}>
+          <MainChat repoURL={conversation.repoURL} />
+        </div>
+      </>
     )),
   };
 }
