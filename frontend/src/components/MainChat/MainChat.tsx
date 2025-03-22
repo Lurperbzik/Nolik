@@ -1,30 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Textarea, Text, ScrollArea, Divider } from '@mantine/core';
+import { Textarea, ScrollArea } from '@mantine/core';
 import usePostMessage from '../../services/SendMessage';
 import { Issues } from './Issues/Issues';
+import { UserInput } from './UserInput';
 
 interface ConversationProps {
   repoURL: string;
   style?: React.CSSProperties;
-}
-
-type UserInputProps = {
-  message: string;
-  key: number;
-};
-
-function UserInput({ message, key }: UserInputProps) {
-  message = message.trim();
-  if (message === '') {
-    return null;
-  }
-
-  return (
-    <div key={key}>
-      <Text style={{ whiteSpace: 'pre-wrap' }}>{message}</Text>
-      <Divider my="md" />
-    </div>
-  );
 }
 
 export function MainChat({ repoURL }: ConversationProps) {
