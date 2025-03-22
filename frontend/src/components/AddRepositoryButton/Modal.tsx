@@ -1,7 +1,7 @@
-import { Button, Modal, Alert, Space } from '@mantine/core';
+import { Button, Modal, Space } from '@mantine/core';
 import { useState } from 'react';
-import { GiInfo } from 'react-icons/gi';
 import { RepositoryForm } from './Form';
+import { Alerts } from './Alerts';
 
 type ModalProps = {
   opened: boolean;
@@ -9,7 +9,7 @@ type ModalProps = {
 };
 
 export function AddModal({ opened, setOpened }: ModalProps) {
-  const [error, setError] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   const [errorOwner, setErrorOwner] = useState('');
   const [errorName, setErrorName] = useState('');
@@ -23,7 +23,7 @@ export function AddModal({ opened, setOpened }: ModalProps) {
         opened={opened}
         onClose={() => {
           setOpened(false);
-          setError(false);
+          setCompleted(false);
           setErrorOwner('');
           setErrorName('');
           setValueOwner('');
@@ -48,6 +48,7 @@ export function AddModal({ opened, setOpened }: ModalProps) {
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             color="lime"
+            loading={completed}
             onClick={() => {
               if (valueOwner === '') {
                 setErrorOwner('Owner is required');
@@ -62,17 +63,23 @@ export function AddModal({ opened, setOpened }: ModalProps) {
                 valueName !== ''
               ) {
                 // Aquí puedes agregar la lógica para enviar los datos
-                setError(true);
+                setCompleted(true);
               } else {
-                setError(false);
+                setCompleted(false);
               }
             }}
           >
             Submit
           </Button>
         </div>
+        <Alerts
+          loadingButton={completed}
+          setLoadingButton={setCompleted}
+          owner={valueOwner}
+          repo={valueName}
+        />
 
-        {error && (
+        {/*completed && (
           <>
             <Space h="md" />
             <Alert variant="light" color="red" title="Error" icon={<GiInfo />}>
@@ -80,7 +87,7 @@ export function AddModal({ opened, setOpened }: ModalProps) {
               officiis, quae tempore necessitatibus placeat saepe.
             </Alert>
           </>
-        )}
+        )*/}
       </Modal>
     </>
   );
