@@ -2,6 +2,7 @@ import { Button, Modal, Space } from '@mantine/core';
 import { useState } from 'react';
 import { RepositoryForm } from './Form';
 import { Alerts } from './Alerts';
+import { useCheckRepository } from '../../services/CheckRepository';
 
 type ModalProps = {
   opened: boolean;
@@ -9,21 +10,25 @@ type ModalProps = {
 };
 
 export function AddModal({ opened, setOpened }: ModalProps) {
-  const [completed, setCompleted] = useState(false);
-
+  const [validInput, setValidInput] = useState(false);
   const [errorOwner, setErrorOwner] = useState('');
   const [errorName, setErrorName] = useState('');
 
   const [valueOwner, setValueOwner] = useState('');
   const [valueName, setValueName] = useState('');
 
+  const { success, error, loading, getMessage } = useCheckRepository({
+    owner: valueOwner,
+    repo: valueName,
+  });
+
   return (
     <>
       <Modal
-        opened={opened}
+        opened={opened || loading}
         onClose={() => {
           setOpened(false);
-          setCompleted(false);
+          setValidInput(false);
           setErrorOwner('');
           setErrorName('');
           setValueOwner('');
@@ -48,7 +53,7 @@ export function AddModal({ opened, setOpened }: ModalProps) {
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             color="lime"
-            loading={completed}
+            loading={loading}
             onClick={() => {
               if (valueOwner === '') {
                 setErrorOwner('Owner is required');
@@ -62,32 +67,17 @@ export function AddModal({ opened, setOpened }: ModalProps) {
                 valueOwner !== '' &&
                 valueName !== ''
               ) {
-                // Aquí puedes agregar la lógica para enviar los datos
-                setCompleted(true);
+                setValidInput(true);
+                getMessage();
               } else {
-                setCompleted(false);
+                setValidInput(false);
               }
             }}
           >
             Submit
           </Button>
         </div>
-        <Alerts
-          loadingButton={completed}
-          setLoadingButton={setCompleted}
-          owner={valueOwner}
-          repo={valueName}
-        />
-
-        {/*completed && (
-          <>
-            <Space h="md" />
-            <Alert variant="light" color="red" title="Error" icon={<GiInfo />}>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. At
-              officiis, quae tempore necessitatibus placeat saepe.
-            </Alert>
-          </>
-        )*/}
+        {validInput && <Alerts success={success} error={error} />}
       </Modal>
     </>
   );

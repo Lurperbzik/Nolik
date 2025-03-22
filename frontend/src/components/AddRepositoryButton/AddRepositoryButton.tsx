@@ -15,7 +15,7 @@ export function AddRepositoryButton() {
         radius="lg"
         rightSection={<IoAddCircle size={20} />}
         onClick={() => {
-          setLoading(!loading);
+          setLoading(true);
         }}
       >
         Add
