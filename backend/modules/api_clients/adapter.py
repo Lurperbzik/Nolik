@@ -12,6 +12,23 @@ class ApiClient:
         
         self.token = token
     
+    async def exists(self, owner, repo):
+        print("Exists")
+        if self.client.name == "github":
+            print("Github")
+            try:
+                github = GithubClient(token=self.token, owner=owner, repo=repo)
+                repo = await github.validate_repo()
+                return repo
+            except ClientException as e:
+                raise HTTPException(status_code=e.status_code, detail=str(e))
+            except HTTPException as e:
+                raise e
+            except Exception as e:
+                raise HTTPException(status_code=500, detail="Internal Server Error")
+        else:
+            raise HTTPException(status_code=400, detail="Client not supported")
+            
     async def fetch_issues(self, owner, repo) -> RepositoryIssues:
         if self.client.name == "github":
             try:

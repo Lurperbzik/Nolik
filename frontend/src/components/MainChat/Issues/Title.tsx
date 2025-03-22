@@ -48,7 +48,13 @@ export function IssueTitle({ issue }: IssueProps) {
             </Title>
           </Card>
           <Button onClick={toggle} variant="default" fullWidth>
-            <CgPushChevronDown size="24px" />
+            {!opened && <CgPushChevronDown size="24px" />}
+            {opened && (
+              <CgPushChevronDown
+                size="24px"
+                style={{ transform: 'rotate(180deg)' }}
+              />
+            )}
           </Button>
         </Flex>
 
