@@ -1,0 +1,28 @@
+img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+pre,
+code {
+  display: block;
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-width: 100%;
+}

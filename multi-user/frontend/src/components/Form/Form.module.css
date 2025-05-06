@@ -1,0 +1,12 @@
+.fieldset {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.fieldset legend {
+  font-weight: 600;
+  font-size: 18px;
+  color: #2e2e2e;
+}
