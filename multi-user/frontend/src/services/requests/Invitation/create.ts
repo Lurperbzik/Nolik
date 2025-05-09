@@ -5,7 +5,7 @@ type createInvitationProps = {
   invitation: Invitation;
 };
 
-export const useCreateCollection = ({ invitation }: createInvitationProps) => {
+export const useCreateInvitation = ({ invitation }: createInvitationProps) => {
   const { loading, error, request } = HookService({
     request: {
       url: "http://localhost:3000/invitations",

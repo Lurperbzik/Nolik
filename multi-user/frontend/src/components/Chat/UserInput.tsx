@@ -11,8 +11,18 @@ export function UserInput({ message }: UserInputProps) {
   }
 
   return (
-    <Card withBorder radius="xs" style={{ backgroundColor: "#dddddd" }}>
-      <Text style={{ whiteSpace: "pre-wrap" }}>{message}</Text>
-    </Card>
+    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <Card
+        withBorder
+        radius="lg"
+        style={{
+          backgroundColor: "#dddddd",
+          maxWidth: "800px",
+          width: "100%",
+        }}
+      >
+        <Text style={{ whiteSpace: "pre-wrap" }}>{message}</Text>
+      </Card>
+    </div>
   );
 }

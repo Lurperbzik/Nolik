@@ -44,6 +44,34 @@ export class Model {
     }
   }
 
+  public async getInvitationsByCollectionUrl(
+    collectionUrl: string,
+    userId: string
+  ): Promise<CollectionInvitation[]> {
+    try {
+      const result = await pool.query(
+        "SELECT c.*, ci.* FROM collections c INNER JOIN collection_invites ci ON c.id = ci.collection_id WHERE c.url = $1 and ci.invited_by_user_id = $2",
+        [collectionUrl, userId]
+      );
+      const mapRowToCollectionInvitation = (
+        row: any
+      ): CollectionInvitation => ({
+        name: row.name,
+        owner: row.owner,
+        platform: row.platform,
+        url: row.url,
+        invitedUserId: row.invited_user_id,
+        collectionId: row.collection_id,
+        status: row.status,
+        invitedByUserId: row.invited_by_user_id,
+      });
+
+      return result.rows.map(mapRowToCollectionInvitation);
+    } catch (error: any) {
+      throw new HttpException(error.message, 500);
+    }
+  }
+
   public async createInvitation(
     invitation: Invitation,
     userId: string
@@ -65,6 +93,13 @@ export class Model {
       }
       const invitedUserId = result.rows[0].id;
 
+      const existingInvitation = await pool.query(
+        "SELECT * FROM collection_invites WHERE collection_id = $1 AND invited_user_id = $2 AND invited_by_user_id = $3",
+        [collectionId, invitedUserId, userId]
+      );
+      if (existingInvitation.rows.length > 0) {
+        throw new HttpException("Invitation already exists", 409);
+      }
       await pool.query(
         "INSERT INTO collection_invites (collection_id, invited_user_id, invited_by_user_id) VALUES ($1, $2, $3)",
         [collectionId, invitedUserId, userId]
@@ -85,8 +120,8 @@ export class Model {
         "DELETE FROM collection_invites WHERE collection_id = $1 AND invited_user_id = $2 AND invited_by_user_id = $3",
         [
           invitation.collectionId,
-          invitation.invitedByUserId,
           invitation.invitedUserId,
+          invitation.invitedByUserId,
         ]
       );
       if (result.rowCount === 0) {

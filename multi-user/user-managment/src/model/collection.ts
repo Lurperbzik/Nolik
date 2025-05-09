@@ -37,6 +37,24 @@ export class Model {
     }
   }
 
+  public async getOwnedCollections(userId: string): Promise<Collection[]> {
+    try {
+      const result = await pool.query(
+        "SELECT * FROM collections WHERE owner_id = $1",
+        [userId]
+      );
+      const mapRowToCollection = (row: any): Collection => ({
+        name: row.name,
+        owner: row.owner,
+        platform: row.platform,
+        url: row.url,
+      });
+      return result.rows.map(mapRowToCollection);
+    } catch (error: any) {
+      throw new HttpException(error.message, 500);
+    }
+  }
+
   public async createCollection(
     collection: Collection,
     userId: string

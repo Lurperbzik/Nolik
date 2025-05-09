@@ -8,8 +8,7 @@ import {
   ActionIcon,
   Tooltip,
 } from "@mantine/core";
-import { MdInsertInvitation } from "react-icons/md";
-import { MdErrorOutline } from "react-icons/md";
+import { MdInsertInvitation, MdErrorOutline } from "react-icons/md";
 import { useGetInvitations } from "../../services/requests/Invitation/get";
 import { CollectionInvitation } from "../../models/Invitation";
 import { FaCheckCircle } from "react-icons/fa";
@@ -45,8 +44,12 @@ export function NavInvitations() {
   const { loading, error, getInvitations } = useGetInvitations({
     setInvitations,
   });
-  const [acceptModalOpened, setAcceptModalOpened] = useState(false);
-  const [declineModalOpened, setDeclineModalOpened] = useState(false);
+
+  const [activeAccept, setActiveAccept] = useState<CollectionInvitation | null>(
+    null
+  );
+  const [activeDecline, setActiveDecline] =
+    useState<CollectionInvitation | null>(null);
 
   useEffect(() => {
     getInvitations();
@@ -78,26 +81,20 @@ export function NavInvitations() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       <InvitationsHeader />
       <Box>
         {invitations.map((inv) => (
           <div key={inv.url}>
             <AcceptInvitation
               invitation={inv}
-              opened={acceptModalOpened}
-              onClose={() => setAcceptModalOpened(false)}
+              opened={activeAccept?.url === inv.url}
+              onClose={() => setActiveAccept(null)}
             />
             <DeclineInvitation
               invitation={inv}
-              opened={declineModalOpened}
-              onClose={() => setDeclineModalOpened(false)}
+              opened={activeDecline?.url === inv.url}
+              onClose={() => setActiveDecline(null)}
             />
             <NavLink
               label={inv.name}
@@ -111,7 +108,7 @@ export function NavInvitations() {
                     color="gray"
                     opacity={0.8}
                     transitionProps={{ duration: 10 }}
-                    onClick={() => setDeclineModalOpened(true)}
+                    onClick={() => setActiveDecline(inv)}
                   >
                     <ActionIcon variant="subtle" color="red">
                       <AiOutlineCloseCircle size="18px" />
@@ -124,7 +121,7 @@ export function NavInvitations() {
                     color="gray"
                     opacity={0.8}
                     transitionProps={{ duration: 10 }}
-                    onClick={() => setAcceptModalOpened(true)}
+                    onClick={() => setActiveAccept(inv)}
                   >
                     <ActionIcon variant="subtle">
                       <FaCheckCircle color="green" />

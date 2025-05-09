@@ -6,7 +6,6 @@ import {
   Skeleton,
   Autocomplete,
   NavLink,
-  ActionIcon,
 } from "@mantine/core";
 import { FaUserCircle } from "react-icons/fa";
 import { MdErrorOutline } from "react-icons/md";
@@ -14,8 +13,6 @@ import { useGetUsers } from "../../services/requests/User/get";
 import { PiUserCirclePlus } from "react-icons/pi";
 import { User } from "../../models/User";
 import { useAuthContext } from "../../context/auth/AuthContext";
-import { FaRegEnvelope } from "react-icons/fa";
-import { CreateInvitation } from "../Users/CreateInvitation";
 
 function UsersHeader() {
   return (
@@ -44,13 +41,6 @@ export function NavUsers() {
   const { loading, error, getUsers } = useGetUsers({ setUsers });
   const { userId } = useAuthContext();
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [opened, setOpened] = useState(false);
-  const [activeUser, setActiveUser] = useState<string | null>(null);
-
-  const handleUserClick = (user: User) => {
-    setActiveUser(user.username);
-    setOpened(true);
-  };
 
   useEffect(() => {
     getUsers();
@@ -104,22 +94,11 @@ export function NavUsers() {
           <NavLink
             key={user.id}
             label={user.username}
-            onClick={() => handleUserClick(user)}
             leftSection={<PiUserCirclePlus />}
-            rightSection={
-              <ActionIcon variant="subtle">
-                <FaRegEnvelope />
-              </ActionIcon>
-            }
           />
         ))}
         <hr style={{ border: "none", borderTop: "1px solid #e0e0e0" }} />
       </Box>
-      <CreateInvitation
-        opened={opened}
-        setOpened={setOpened}
-        activeUser={activeUser ? activeUser : ""}
-      />
     </div>
   );
 }

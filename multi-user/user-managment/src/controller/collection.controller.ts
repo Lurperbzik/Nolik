@@ -11,39 +11,45 @@ import { deleteCollectionService } from "../services/requests/deleteCollection";
 
 const model = new Model();
 
-export const getCollections = async (req: CustomRequest, res: any) => {
-  const userId = req.user;
-  if (!userId) {
-    res.status(400).json("Incorrect values");
-    return;
-  }
-  let collections: Collection[] = [];
-  try {
-    collections = await model.getCollections(userId);
-  } catch (err: any) {
-    if (err instanceof HttpException) {
-      res.status(err.statusCode).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Unknown error" });
+export const getCollections =
+  ({ owned = false }: { owned?: boolean }) =>
+  async (req: CustomRequest, res: any) => {
+    const userId = req.user;
+    if (!userId) {
+      res.status(400).json("Incorrect values");
+      return;
     }
-  }
+    let collections: Collection[] = [];
+    try {
+      if (owned) {
+        collections = await model.getOwnedCollections(userId);
+      } else {
+        collections = await model.getCollections(userId);
+      }
+    } catch (err: any) {
+      if (err instanceof HttpException) {
+        res.status(err.statusCode).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "Unknown error" });
+      }
+    }
 
-  try {
-    const collectionsService: CollectionService[] =
-      await getCollectionsService();
-    const result = new Set(collections.map((item) => item.url));
-    const matchingCollections = collectionsService.filter((item) =>
-      result.has(item.url)
-    );
-    res.status(200).json(matchingCollections);
-  } catch (err: any) {
-    if (err instanceof HttpException) {
-      res.status(err.statusCode).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Unknown error" });
+    try {
+      const collectionsService: CollectionService[] =
+        await getCollectionsService();
+      const result = new Set(collections.map((item) => item.url));
+      const matchingCollections = collectionsService.filter((item) =>
+        result.has(item.url)
+      );
+      res.status(200).json(matchingCollections);
+    } catch (err: any) {
+      if (err instanceof HttpException) {
+        res.status(err.statusCode).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "Unknown error" });
+      }
     }
-  }
-};
+  };
 
 export const deleteCollection = async (req: any, res: any) => {
   const userId = req.user;

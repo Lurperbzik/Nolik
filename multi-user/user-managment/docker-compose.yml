@@ -14,7 +14,7 @@ services:
     command: node build/index.js
 
   db:
-    image: postgres:16
+    image: postgres:17
     container_name: postgres_db
     restart: unless-stopped
     environment:

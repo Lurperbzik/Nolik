@@ -22,11 +22,10 @@ export function DeleteCollection({
       opened={opened}
       onClose={onClose}
       title={
-        <Text size="lg" fw="bold">
+        <Text size="lg" fw="800" style={{ color: "#333" }}>
           Delete Collection
         </Text>
       }
-      centered
       fw="bold"
       styles={{
         content: {
@@ -39,12 +38,23 @@ export function DeleteCollection({
       }}
     >
       <Space h="md" />
-      <Text style={{ wordBreak: "break-word", overflowWrap: "break-word" }}>
+      <Text
+        fw="bold"
+        style={{
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
+          color: "#333",
+        }}
+      >
         Are you sure you want to delete{" "}
         <Text component="span" c="blue" fw="bold">
           {collection.name}
-        </Text>{" "}
-        collection?
+        </Text>
+      </Text>
+      <Space h="md" />
+      <Text>
+        By continuing, you will lose access to this collection. It will only be
+        removed globally if you are the owner.
       </Text>
       <hr
         style={{

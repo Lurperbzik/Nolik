@@ -7,6 +7,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { PiLinkBold } from "react-icons/pi";
 import { getGitHubURL } from "../../utils/urlHelpers";
 import { DeleteCollection } from "../Collection/Delete";
+import { ShareCollection } from "../Invitations/Share";
 
 type NavlinkProps = {
   collection: Collection;
@@ -54,6 +55,7 @@ export function Navlink({ collection, active, onClick }: NavlinkProps) {
           leftSection={<PlatformIcon platform={collection.platform} />}
           rightSection={
             <div style={{ display: "flex", gap: "4px" }}>
+              <ShareCollection collection={collection} />
               <ActionIcon
                 variant="subtle"
                 size="md"

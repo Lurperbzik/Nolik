@@ -9,5 +9,10 @@ router.delete("/", authenticate, invitationController.deleteInvitation);
 router.post("/", authenticate, invitationController.createInvitation);
 router.post("/accept", authenticate, invitationController.acceptInvitation);
 router.post("/decline", authenticate, invitationController.declineInvitation);
+router.get(
+  "/:collectionUrl",
+  authenticate,
+  invitationController.getInvitationsByCollectionUrl
+);
 
 export default router;
