@@ -1,5 +1,4 @@
-import { Home } from "../components/Home/Home";
-
+import { Home } from "../prueba/Home";
 export function HomePage() {
   return <Home />;
 }

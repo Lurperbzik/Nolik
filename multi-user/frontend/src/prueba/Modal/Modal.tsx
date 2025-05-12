@@ -2,6 +2,7 @@ import { Button, Modal, Text, Space } from "@mantine/core";
 
 type CustomModalProps<T> = {
   data: T;
+  endContent?: React.ReactNode;
   modalTextField: keyof T;
   opened: boolean;
   setOpened: (opened: boolean) => void;
@@ -28,6 +29,7 @@ export function CustomModal<T>({
   buttonText,
   colorButton,
   onClickBottom,
+  endContent,
 }: CustomModalProps<T>) {
   return (
     <Modal
@@ -37,11 +39,15 @@ export function CustomModal<T>({
         onClose();
       }}
       title={
-        <Text size="lg" fw="800" style={{ color: "#333" }}>
-          {title}
-        </Text>
+        <>
+          <Text size="lg" fw="800" style={{ color: "#333" }}>
+            {title}{" "}
+            <Text size="lg" component="span" c="blue" fw="800">
+              {String(data[modalTextField])}
+            </Text>
+          </Text>
+        </>
       }
-      fw="bold"
       styles={{
         content: {
           backgroundColor: "#f9f9f9",
@@ -53,23 +59,26 @@ export function CustomModal<T>({
       }}
     >
       <Space h="md" />
-      <Text
-        style={{
-          wordBreak: "break-word",
-          overflowWrap: "break-word",
-          color: "#333",
-        }}
-        size="md"
-        fw="600"
-      >
-        {text}{" "}
-        <Text component="span" c="blue" fw="bold">
-          {String(data[modalTextField])}
-        </Text>
-        ?
-      </Text>
-      <Space h="md" />
-      <Text size="sm">{textSecondary}</Text>
+      {endContent ? (
+        endContent
+      ) : (
+        <>
+          <Text
+            style={{
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+              color: "#333",
+            }}
+            size="md"
+            fw="600"
+          >
+            {text}
+          </Text>
+          <Space h="md" />
+          <Text size="sm">{textSecondary}</Text>
+        </>
+      )}
+
       <hr
         style={{
           position: "relative",

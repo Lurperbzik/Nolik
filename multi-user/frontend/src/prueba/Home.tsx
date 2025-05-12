@@ -2,9 +2,14 @@ import { useState } from "react";
 import { AppShell, Burger, Group } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { Navbar } from "./Navbar";
+import { ChatContainer } from "./Chat/ChatContainer";
+import { Collection } from "../models/Collection";
 
 export function Home() {
   const [opened, setOpened] = useState(false);
+  const [activeCollection, setActiveCollection] = useState<
+    Collection | undefined
+  >(undefined);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -39,11 +44,18 @@ export function Home() {
         }}
         p="md"
       >
-        <Navbar />
+        <Navbar
+          activeCollection={activeCollection}
+          setActiveCollection={setActiveCollection}
+        />
       </AppShell.Navbar>
       <AppShell.Main
         style={{ height: "100%", overflow: "auto", scrollbarWidth: "thin" }}
-      ></AppShell.Main>
+      >
+        <ChatContainer
+          collectionUrl={activeCollection ? activeCollection.url : ""}
+        />
+      </AppShell.Main>
     </AppShell>
   );
 }

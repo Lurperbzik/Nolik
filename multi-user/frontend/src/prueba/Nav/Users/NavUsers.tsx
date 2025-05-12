@@ -4,11 +4,9 @@ import { PiUserCirclePlus } from "react-icons/pi"; // left icon
 import { IconType } from "react-icons";
 import { User } from "../../../models/User";
 
-const users = [
-  { id: 1, username: "user1" },
-  { id: 2, username: "user2" },
-  { id: 3, username: "user3" },
-];
+interface NavUsersProps {
+  users: User[];
+}
 
 const NavUsersData: {
   headerTitle: string;
@@ -40,7 +38,7 @@ const NavUsersData: {
   active: undefined,
 };
 
-export function NavUsers() {
+export function NavUsers({ users }: NavUsersProps) {
   const leftIcons = users.map((user) => {
     return <PiUserCirclePlus key={user.id} />;
   });

@@ -1,93 +1,61 @@
-import { useState } from "react";
 import { NavBarItem, Header } from "../Nav";
 import { MdInsertInvitation } from "react-icons/md";
 import { PlatformIcon } from "../Collections/PlatformIcon";
 import { RightIcons } from "./RightIcons";
-import { CollectionInvitation } from "../../../models/Invitation";
 import { IconType } from "react-icons";
-
-const invitations = [
-  {
-    name: "Collection 1",
-    owner: "User1",
-    platform: "GitHub",
-    url: "https://api.github.com/repos/Lurperbzik/Admin3",
-    invitedUserId: 1,
-    invitedByUserId: 2,
-    collectionId: 1,
-    status: "completed",
-  },
-  {
-    name: "Collection 2",
-    owner: "User2",
-    platform: "Jira",
-    url: "https://example2.com",
-    invitedUserId: 2,
-    invitedByUserId: 1,
-    collectionId: 2,
-    status: "loading",
-  },
-  {
-    name: "Collection 3",
-    owner: "User3",
-    platform: "GitHub",
-    url: "https://example.com",
-    invitedUserId: 3,
-    invitedByUserId: 1,
-    collectionId: 3,
-    status: "completed",
-  },
-];
+import { Invitation } from "../../../models/Invitation";
 
 const NavInvitationsData: {
   headerTitle: string;
   Icon: IconType;
   loading: boolean;
   error: boolean;
-  navlinkKeyField: keyof CollectionInvitation;
-  navlinkValueField: keyof CollectionInvitation;
+  navlinkKeyField: keyof Invitation;
+  navlinkValueField: keyof Invitation;
   loadingIcon: boolean[];
   activeColorNavlink: boolean;
   autocomplete: boolean;
   autocompletePlaceholder: string;
-  setActive: React.Dispatch<
-    React.SetStateAction<CollectionInvitation | undefined>
-  >;
-  active: CollectionInvitation | undefined;
 } = {
   headerTitle: "Invitations",
   Icon: MdInsertInvitation,
   loading: false,
   error: false,
-  navlinkKeyField: "url",
-  navlinkValueField: "name",
+  navlinkKeyField: "urlCollection",
+  navlinkValueField: "nameCollection",
   loadingIcon: [],
   activeColorNavlink: false,
   autocomplete: false,
   autocompletePlaceholder: "",
-  setActive: () => {},
-  active: undefined,
 };
 
-export function NavInvitations() {
-  const [activeAccept, setActiveAccept] = useState(false);
-  const [activeDecline, setActiveDecline] = useState(false);
+type NavInvitationsProps = {
+  invitations: Invitation[];
+  setActive: React.Dispatch<React.SetStateAction<Invitation | undefined>>;
+  active: Invitation | undefined;
+  setAcceptModalOpened: (opened: boolean) => void;
+  setDeclineModalOpened: (opened: boolean) => void;
+};
 
-  const leftIcons = invitations.map((inv) => {
+export function NavInvitations({
+  invitations,
+  setActive,
+  active,
+  setAcceptModalOpened,
+  setDeclineModalOpened,
+}: NavInvitationsProps) {
+  const PlatformIcons = invitations.map((inv) => {
     return (
-      <PlatformIcon
-        platform={inv.platform}
-        key={inv.url + "-" + inv.invitedByUserId}
-      />
+      <PlatformIcon key={inv.urlCollection} platform={inv.platformCollection} />
     );
   });
 
-  const rightIconsComponent = invitations.map((inv) => {
+  const RightIconsComponent = invitations.map((inv) => {
     return (
       <RightIcons
-        key={inv.url + "-" + inv.invitedByUserId}
-        setDeclineModalOpened={setActiveDecline}
-        setAcceptModalOpened={setActiveAccept}
+        key={inv.urlCollection}
+        setDeclineModalOpened={setDeclineModalOpened}
+        setAcceptModalOpened={setAcceptModalOpened}
       />
     );
   });
@@ -108,16 +76,16 @@ export function NavInvitations() {
         data={invitations}
         loading={NavInvitationsData.loading}
         error={NavInvitationsData.error}
-        leftElement={leftIcons}
-        rightElement={rightIconsComponent}
+        leftElement={PlatformIcons}
+        rightElement={RightIconsComponent}
         navlinkKeyField={NavInvitationsData.navlinkKeyField}
         navlinkValueField={NavInvitationsData.navlinkValueField}
         loadingIcon={NavInvitationsData.loadingIcon}
         activeColorNavlink={NavInvitationsData.activeColorNavlink}
         autocomplete={NavInvitationsData.autocomplete}
         autocompletePlaceholder={NavInvitationsData.autocompletePlaceholder}
-        setActive={NavInvitationsData.setActive}
-        active={NavInvitationsData.active}
+        setActive={setActive}
+        active={active}
       />
     </div>
   );

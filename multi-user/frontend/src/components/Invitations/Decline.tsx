@@ -1,5 +1,5 @@
 import { Button, Modal, Text, Space } from "@mantine/core";
-import { CollectionInvitation } from "../../models/Invitation";
+import { CollectionInvitation } from "../../models/InvitationOld";
 import { useDeclineInvitation } from "../../services/requests/Invitation/decline";
 type DeclineInvitationProps = {
   invitation: CollectionInvitation;

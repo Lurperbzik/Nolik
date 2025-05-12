@@ -1,50 +1,47 @@
 import { CustomModal } from "../Modal";
-import { Collection } from "../../../models/Collection";
+import { Invitation } from "../../../models/Invitation";
 
 const modalData: {
-  modalTextField: keyof Collection;
+  modalTextField: keyof Invitation;
   title: string;
-  text: string;
   textSecondary: string;
   button: boolean;
   buttonText: string;
   colorButton: string;
 } = {
-  modalTextField: "name",
-  title: "Delete Collection",
-  text: "Are you sure you want to delete",
-  textSecondary:
-    "By continuing, you will lose access to this collection. It will only be removed globally if you are the owner.",
+  modalTextField: "nameCollection",
+  title: "Delete Invitation for",
+  textSecondary: "",
   button: true,
-  buttonText: "Delete",
+  buttonText: "Confirm",
   colorButton: "#b5351c",
 };
 
-type DeleteCollectionModalProps = {
-  collection: Collection | undefined;
+type DeleteInvitationModalProps = {
+  invitation: Invitation | undefined;
   opened: boolean;
   onClickBottom: () => void;
   onClose: () => void;
 };
 
-export function DeleteCollectionModal({
-  collection,
+export function DeleteInvitationModal({
+  invitation,
   opened,
   onClickBottom,
   onClose,
-}: DeleteCollectionModalProps) {
-  if (!collection) {
+}: DeleteInvitationModalProps) {
+  if (!invitation) {
     return null;
   }
   return (
     <CustomModal
-      data={collection}
+      data={invitation}
       modalTextField={modalData.modalTextField}
       opened={opened}
       onClose={onClose}
       setOpened={() => {}}
       title={modalData.title}
-      text={modalData.text}
+      text={`Do you confirm that ${invitation.invitedUsername}'s access to this collection should be revoked?`}
       textSecondary={modalData.textSecondary}
       button={modalData.button}
       buttonText={modalData.buttonText}

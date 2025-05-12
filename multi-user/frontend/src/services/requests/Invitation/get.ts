@@ -1,8 +1,8 @@
 import { HookService } from "../../HookService";
-import { CollectionInvitation } from "../../../models/Invitation";
+import { Invitation } from "../../../models/Invitation";
 
 type getInvitationsProps = {
-  setInvitations: React.Dispatch<React.SetStateAction<CollectionInvitation[]>>;
+  setInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
 };
 
 export const useGetInvitations = ({ setInvitations }: getInvitationsProps) => {

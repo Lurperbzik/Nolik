@@ -1,8 +1,8 @@
 import { HookService } from "../../HookService";
-import { Invitation } from "../../../models/Invitation";
+import { ShortInvitation } from "../../../models/Invitation";
 
 type createInvitationProps = {
-  invitation: Invitation;
+  invitation: ShortInvitation | undefined;
 };
 
 export const useCreateInvitation = ({ invitation }: createInvitationProps) => {

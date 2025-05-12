@@ -1,5 +1,5 @@
 import { HookService } from "../../HookService";
-import { CollectionInvitation } from "../../../models/Invitation";
+import { CollectionInvitation } from "../../../models/InvitationOld";
 
 type useDeclineInvitationProps = {
   invitation: CollectionInvitation;

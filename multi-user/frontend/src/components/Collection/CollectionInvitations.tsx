@@ -4,7 +4,7 @@ import { GoXCircle } from "react-icons/go";
 import { PiUserCirclePlus } from "react-icons/pi";
 import { useAuthContext } from "../../context/auth/AuthContext";
 import { useGetInvitationsByCollection } from "../../services/requests/Invitation/getByCollection";
-import { CollectionInvitation } from "../../models/Invitation";
+import { CollectionInvitation } from "../../models/InvitationOld";
 import { User } from "../../models/User";
 import { deleteInvitation } from "../../services/requests/Invitation/delete";
 

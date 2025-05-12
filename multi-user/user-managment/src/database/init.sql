@@ -37,13 +37,11 @@ WHERE
     ci.status = 'accepted';
 
 
--- Primero creamos la función del trigger
 CREATE OR REPLACE FUNCTION check_owner_before_invite()
 RETURNS TRIGGER AS $$
 DECLARE
     owner_id_local INTEGER;
 BEGIN
-    -- Buscar el owner_id de la colección
     SELECT owner_id INTO owner_id_local
     FROM collections
     WHERE id = NEW.collection_id;
@@ -60,7 +58,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- Crear el trigger que se dispara antes de insertar una nueva invitación
+-- Trigger que se dispara antes de insertar una nueva invitación
 CREATE TRIGGER before_invite_insert
 BEFORE INSERT ON collection_invites
 FOR EACH ROW

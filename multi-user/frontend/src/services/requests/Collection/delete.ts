@@ -1,7 +1,7 @@
 import { HookService } from "../../HookService";
 import { Collection } from "../../../models/Collection";
 type useDeleteCollectionProps = {
-  collection: Collection;
+  collection: Collection | undefined;
 };
 
 export const useDeleteCollection = ({

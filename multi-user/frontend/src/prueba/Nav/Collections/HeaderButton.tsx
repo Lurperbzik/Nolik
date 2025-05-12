@@ -1,5 +1,6 @@
 import { IoAddCircle } from "react-icons/io5";
 import { Button, Text } from "@mantine/core";
+import { CreateModalContainer } from "../../Modal/Collections/Create/CreateModalContainer";
 
 type HeaderButtonProps = {
   loading: boolean;
@@ -24,6 +25,7 @@ export function HeaderButton({ loading, setLoading }: HeaderButtonProps) {
           New
         </Text>
       </Button>
+      <CreateModalContainer opened={loading} setOpened={setLoading} />
     </>
   );
 }

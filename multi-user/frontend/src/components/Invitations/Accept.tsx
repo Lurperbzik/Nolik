@@ -1,5 +1,5 @@
 import { Button, Modal, Text, Space } from "@mantine/core";
-import { CollectionInvitation } from "../../models/Invitation";
+import { CollectionInvitation } from "../../models/InvitationOld";
 import { useAcceptInvitation } from "../../services/requests/Invitation/accept";
 
 type AcceptInvitationProps = {

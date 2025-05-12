@@ -15,13 +15,15 @@ export interface CollectionInvitation {
   invitedByUserId: number;
   collectionId: number;
   status: string;
+  invitedByUsername: string;
+  invitedUsername: number;
 }
 
 export class Model {
   public async getInvitations(userId: string): Promise<CollectionInvitation[]> {
     try {
       const result = await pool.query(
-        "SELECT c.*, ci.* FROM collections c INNER JOIN collection_invites ci ON c.id = ci.collection_id WHERE ci.invited_user_id = $1 and ci.status = 'pending'",
+        "SELECT c.*, ci.*, invited_user.username AS invited_username, inviter_user.username AS inviter_username FROM collections c INNER JOIN collection_invites ci ON c.id = ci.collection_id INNER JOIN users invited_user ON ci.invited_user_id = invited_user.id INNER JOIN users inviter_user ON ci.invited_by_user_id = inviter_user.id WHERE ci.invited_user_id = $1 AND ci.status = 'pending';",
         [userId]
       );
 
@@ -36,6 +38,8 @@ export class Model {
         collectionId: row.collection_id,
         status: row.status,
         invitedByUserId: row.invited_by_user_id,
+        invitedByUsername: row.inviter_username,
+        invitedUsername: row.invited_username,
       });
 
       return result.rows.map(mapRowToCollectionInvitation);
@@ -50,9 +54,10 @@ export class Model {
   ): Promise<CollectionInvitation[]> {
     try {
       const result = await pool.query(
-        "SELECT c.*, ci.* FROM collections c INNER JOIN collection_invites ci ON c.id = ci.collection_id WHERE c.url = $1 and ci.invited_by_user_id = $2",
+        "SELECT c.*, ci.*, invited_user.username AS invited_username, inviter_user.username AS inviter_username FROM collections c INNER JOIN collection_invites ci ON c.id = ci.collection_id INNER JOIN users invited_user ON ci.invited_user_id = invited_user.id INNER JOIN users inviter_user ON ci.invited_by_user_id = inviter_user.id WHERE c.url = $1 AND ci.invited_by_user_id = $2",
         [collectionUrl, userId]
       );
+
       const mapRowToCollectionInvitation = (
         row: any
       ): CollectionInvitation => ({
@@ -64,6 +69,8 @@ export class Model {
         collectionId: row.collection_id,
         status: row.status,
         invitedByUserId: row.invited_by_user_id,
+        invitedByUsername: row.inviter_username,
+        invitedUsername: row.invited_username,
       });
 
       return result.rows.map(mapRowToCollectionInvitation);

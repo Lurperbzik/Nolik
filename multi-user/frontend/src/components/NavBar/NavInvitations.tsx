@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { MdInsertInvitation, MdErrorOutline } from "react-icons/md";
 import { useGetInvitations } from "../../services/requests/Invitation/get";
-import { CollectionInvitation } from "../../models/Invitation";
+import { CollectionInvitation } from "../../models/InvitationOld";
 import { FaCheckCircle } from "react-icons/fa";
 import { PlatformIcon } from "../NavLink/NavLink";
 import { AiOutlineCloseCircle } from "react-icons/ai";
