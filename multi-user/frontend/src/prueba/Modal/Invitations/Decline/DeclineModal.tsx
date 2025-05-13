@@ -1,5 +1,5 @@
-import { CustomModal } from "../Modal";
-import { Invitation } from "../../../models/Invitation";
+import { CustomModal } from "../../Modal";
+import { Invitation } from "../../../../models/Invitation";
 
 const modalData: {
   modalTextField: keyof Invitation;
@@ -11,27 +11,27 @@ const modalData: {
   colorButton: string;
 } = {
   modalTextField: "nameCollection",
-  title: "Accept Invitation for",
-  text: "Are you sure you want to accept this invitation?",
+  title: "Decline Invitation for",
+  text: "Are you sure you want to decline this invitation?",
   textSecondary: "",
   button: true,
   buttonText: "Confirm",
-  colorButton: "green",
+  colorButton: "#b5351c",
 };
 
-type AcceptInvitationModalProps = {
+type DeclineInvitationModalProps = {
   invitation: Invitation | undefined;
   opened: boolean;
   onClickBottom: () => void;
   onClose: () => void;
 };
 
-export function AcceptInvitationModal({
+export function DeclineInvitationModal({
   invitation,
   opened,
   onClickBottom,
   onClose,
-}: AcceptInvitationModalProps) {
+}: DeclineInvitationModalProps) {
   if (!invitation) {
     return null;
   }

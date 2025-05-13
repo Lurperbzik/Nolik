@@ -1,6 +1,6 @@
-import { ShortInvitation } from "../../../models/Invitation";
+import { Invitation } from "../../../models/Invitation";
 
-export async function deleteInvitation(invitation: ShortInvitation) {
+export async function deleteInvitation(invitation: Invitation | undefined) {
   await fetch(`http://localhost:3000/invitations`, {
     method: "DELETE",
     headers: {

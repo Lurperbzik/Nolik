@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { ShareCollectionModal } from "./ShareModal";
 import { deleteInvitation } from "../../../../services/requests/Invitation/delete";
 import { useCreateInvitation } from "../../../../services/requests/Invitation/create";
-import { useGetInvitationsByCollection } from "../../../../services/requests/Invitation/getByCollection";
 import { User } from "../../../../models/User";
 import { Invitation, ShortInvitation } from "../../../../models/Invitation";
 import { Collection } from "../../../../models/Collection";
+import { useGetInvitationsByUser } from "../../../../services/requests/Invitation/getByUserId";
 
 interface ShareCollectionModalContainerProps {
   users: User[];
@@ -24,21 +24,29 @@ export function ShareCollectionModalContainer({
   const [activeInvitation, setActiveInvitation] = useState<
     ShortInvitation | undefined
   >(undefined);
-  const [activeCollectionUrl, setActiveCollectionUrl] = useState<string>("");
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [userInvitations, setUserInvitations] = useState<Invitation[]>([]);
+  const [userInvitationsFiltered, setUserInvitationsFiltered] = useState<
+    Invitation[]
+  >([]);
+  const [activeDeleteInvitation, setActiveDeleteInvitation] = useState<
+    Invitation | undefined
+  >(undefined);
 
-  const { getInvitationsByCollection } = useGetInvitationsByCollection({
-    collectionUrl: activeCollectionUrl,
-    setInvitations: setInvitations,
+  const { getInvitationsByUser } = useGetInvitationsByUser({
+    setInvitations: setUserInvitations,
   });
 
   useEffect(() => {
-    if (activeCollection) {
-      getInvitationsByCollection();
-      setActiveCollectionUrl(activeCollection.url);
-    }
+    const filtered = userInvitations.filter(
+      (invitation) => invitation.urlCollection === activeCollection?.url
+    );
+    setUserInvitationsFiltered(filtered);
+  }, [userInvitations, activeCollection]);
+
+  useEffect(() => {
+    getInvitationsByUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeCollection]);
+  }, []);
 
   useEffect(() => {
     if (activeUser && activeCollection) {
@@ -58,12 +66,8 @@ export function ShareCollectionModalContainer({
     return null;
   }
 
-  const handleDeleteInvitation = async (invitation: ShortInvitation) => {
-    const shortInvitation: ShortInvitation = {
-      collectionUrl: activeCollection.url,
-      invitedUsername: invitation.invitedUsername,
-    };
-    await deleteInvitation(shortInvitation);
+  const handleDeleteInvitation = async () => {
+    await deleteInvitation(activeDeleteInvitation);
   };
 
   const handleCreateInvitation = async (
@@ -76,7 +80,7 @@ export function ShareCollectionModalContainer({
 
   return (
     <ShareCollectionModal
-      invitations={invitations}
+      invitations={userInvitationsFiltered}
       users={users}
       setActiveUser={setActiveUser}
       opened={opened}
@@ -87,8 +91,8 @@ export function ShareCollectionModalContainer({
         setOpened(false);
       }}
       onClickBottomDeleteInvitation={() => {
-        if (activeInvitation) {
-          handleDeleteInvitation(activeInvitation);
+        if (activeDeleteInvitation) {
+          handleDeleteInvitation();
         }
         setOpened(false);
       }}
@@ -97,6 +101,8 @@ export function ShareCollectionModalContainer({
       onClose={() => {
         setOpened(false);
       }}
+      activeDeleteInvitation={activeDeleteInvitation}
+      setActiveDeleteInvitation={setActiveDeleteInvitation}
     />
   );
 }

@@ -54,6 +54,26 @@ export const getInvitationsByCollectionUrl = async (
   }
 };
 
+export const getInvitationsByUserId = async (req: CustomRequest, res: any) => {
+  const userId = req.user;
+  if (!userId) {
+    res.status(400).json("Incorrect values");
+    return;
+  }
+  try {
+    const model = new Model();
+    const invitations: CollectionInvitation[] =
+      await model.getInvitationsByUserId(userId);
+    res.status(200).json(invitations);
+  } catch (err: any) {
+    if (err instanceof HttpException) {
+      res.status(err.statusCode).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: "Unknown error" });
+    }
+  }
+};
+
 export const createInvitation = async (req: CustomRequest, res: any) => {
   const userId = req.user;
   if (!userId) {

@@ -1,13 +1,20 @@
 import { HookService } from "../../HookService";
-import { CollectionInvitation } from "../../../models/InvitationOld";
+import { Invitation } from "../../../models/Invitation";
 
 type useDeclineInvitationProps = {
-  invitation: CollectionInvitation;
+  invitation: Invitation | undefined;
 };
 
 export const useDeclineInvitation = ({
   invitation,
 }: useDeclineInvitationProps) => {
+  if (!invitation) {
+    return {
+      loading: false,
+      error: false,
+      declineInvitation: async () => false,
+    };
+  }
   const { loading, error, request } = HookService({
     request: {
       url: "http://localhost:3000/invitations/decline",

@@ -65,6 +65,10 @@ type ShareCollectionModalProps = {
   onClose: () => void;
   activeCollection: Collection | undefined;
   activeUser: User | undefined;
+  activeDeleteInvitation: Invitation | undefined;
+  setActiveDeleteInvitation: React.Dispatch<
+    React.SetStateAction<Invitation | undefined>
+  >;
 };
 
 export function ShareCollectionModal({
@@ -77,12 +81,11 @@ export function ShareCollectionModal({
   onClose,
   activeCollection,
   activeUser,
+  activeDeleteInvitation,
+  setActiveDeleteInvitation,
 }: ShareCollectionModalProps) {
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
   const [addModalOpened, setAddModalOpened] = useState(false);
-  const [activeInvitation, setActiveInvitation] = useState<
-    Invitation | undefined
-  >(undefined);
 
   if (!activeCollection) {
     return null;
@@ -111,9 +114,9 @@ export function ShareCollectionModal({
     <>
       <NavInvitedCollection
         invitations={invitations}
-        setActive={setActiveInvitation}
+        setActive={setActiveDeleteInvitation}
         setDeleteModalOpened={setDeleteModalOpened}
-        active={activeInvitation}
+        active={activeDeleteInvitation}
       />
       <NavBarItem
         data={users}
@@ -151,7 +154,7 @@ export function ShareCollectionModal({
         endContent={endContent}
       />
       <DeleteInvitationModal
-        invitation={activeInvitation}
+        invitation={activeDeleteInvitation}
         opened={deleteModalOpened}
         onClickBottom={() => {
           setDeleteModalOpened(false);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavInvitations } from "../Nav/Invitations/NavInvitations";
-import { DeclineInvitationModal } from "../Modal/Invitations/DeclineModal";
-import { AcceptInvitationModal } from "../Modal/Invitations/AcceptModal";
+import { DeclineInvitationModalContainer } from "../Modal/Invitations/Decline/DeclineModalContanier";
+import { AcceptInvitationModalContainer } from "../Modal/Invitations/Accept/AcceptModalContainer";
 import { Invitation } from "../../models/Invitation";
 
 interface InvitationsViewProps {
@@ -22,25 +22,15 @@ export function InvitationsView({ invitations }: InvitationsViewProps) {
         setAcceptModalOpened={setAcceptModalOpened}
         setDeclineModalOpened={setDeclineModalOpened}
       />
-      <AcceptInvitationModal
+      <AcceptInvitationModalContainer
         invitation={activeInvitation}
         opened={acceptModalOpened}
-        onClickBottom={() => {
-          setAcceptModalOpened(false);
-        }}
-        onClose={() => {
-          setAcceptModalOpened(false);
-        }}
+        setOpened={setAcceptModalOpened}
       />
-      <DeclineInvitationModal
+      <DeclineInvitationModalContainer
         invitation={activeInvitation}
         opened={declineModalOpened}
-        onClickBottom={() => {
-          setDeclineModalOpened(false);
-        }}
-        onClose={() => {
-          setDeclineModalOpened(false);
-        }}
+        setOpened={setDeclineModalOpened}
       />
     </>
   );

@@ -7,10 +7,10 @@ export interface Invitation {
 }
 
 export interface CollectionInvitation {
-  name: string;
-  owner: string;
-  platform: string;
-  url: string;
+  nameCollection: string;
+  ownerCollection: string;
+  platformCollection: string;
+  urlCollection: string;
   invitedUserId: number;
   invitedByUserId: number;
   collectionId: number;
@@ -30,10 +30,40 @@ export class Model {
       const mapRowToCollectionInvitation = (
         row: any
       ): CollectionInvitation => ({
-        name: row.name,
-        owner: row.owner,
-        platform: row.platform,
-        url: row.url,
+        nameCollection: row.name,
+        ownerCollection: row.owner,
+        platformCollection: row.platform,
+        urlCollection: row.url,
+        invitedUserId: row.invited_user_id,
+        collectionId: row.collection_id,
+        status: row.status,
+        invitedByUserId: row.invited_by_user_id,
+        invitedByUsername: row.inviter_username,
+        invitedUsername: row.invited_username,
+      });
+
+      return result.rows.map(mapRowToCollectionInvitation);
+    } catch (error: any) {
+      throw new HttpException(error.message, 500);
+    }
+  }
+
+  public async getInvitationsByUserId(
+    userId: string
+  ): Promise<CollectionInvitation[]> {
+    try {
+      const result = await pool.query(
+        "SELECT c.*, ci.*, invited_user.username AS invited_username, inviter_user.username AS inviter_username FROM collections c INNER JOIN collection_invites ci ON c.id = ci.collection_id INNER JOIN users invited_user ON ci.invited_user_id = invited_user.id INNER JOIN users inviter_user ON ci.invited_by_user_id = inviter_user.id WHERE ci.invited_by_user_id = $1",
+        [userId]
+      );
+
+      const mapRowToCollectionInvitation = (
+        row: any
+      ): CollectionInvitation => ({
+        nameCollection: row.name,
+        ownerCollection: row.owner,
+        platformCollection: row.platform,
+        urlCollection: row.url,
         invitedUserId: row.invited_user_id,
         collectionId: row.collection_id,
         status: row.status,
@@ -61,10 +91,10 @@ export class Model {
       const mapRowToCollectionInvitation = (
         row: any
       ): CollectionInvitation => ({
-        name: row.name,
-        owner: row.owner,
-        platform: row.platform,
-        url: row.url,
+        nameCollection: row.name,
+        ownerCollection: row.owner,
+        platformCollection: row.platform,
+        urlCollection: row.url,
         invitedUserId: row.invited_user_id,
         collectionId: row.collection_id,
         status: row.status,
