@@ -20,7 +20,6 @@ export function ShareCollectionModalContainer({
   setOpened,
   activeCollection,
 }: ShareCollectionModalContainerProps) {
-  const [activeUser, setActiveUser] = useState<User | undefined>(undefined);
   const [activeInvitation, setActiveInvitation] = useState<
     ShortInvitation | undefined
   >(undefined);
@@ -32,9 +31,20 @@ export function ShareCollectionModalContainer({
     Invitation | undefined
   >(undefined);
 
+  const [usersNotInvited, setUsersNotInvited] = useState<User[]>([]);
+  const [activeUserNotInvited, setActiveUserNotInvited] = useState<
+    User | undefined
+  >(undefined);
+
   const { getInvitationsByUser } = useGetInvitationsByUser({
     setInvitations: setUserInvitations,
   });
+
+  useEffect(() => {
+    const invitedUserIds = userInvitations.map((inv) => inv.invitedUserId);
+    const filtered = users.filter((user) => !invitedUserIds.includes(user.id));
+    setUsersNotInvited(filtered);
+  }, [userInvitations, activeUserNotInvited, users]);
 
   useEffect(() => {
     const filtered = userInvitations.filter(
@@ -49,14 +59,14 @@ export function ShareCollectionModalContainer({
   }, []);
 
   useEffect(() => {
-    if (activeUser && activeCollection) {
+    if (activeUserNotInvited && activeCollection) {
       const newInvitation: ShortInvitation = {
         collectionUrl: activeCollection.url,
-        invitedUsername: activeUser.username,
+        invitedUsername: activeUserNotInvited.username,
       };
       setActiveInvitation(newInvitation);
     }
-  }, [activeCollection, activeUser]);
+  }, [activeCollection, activeUserNotInvited]);
 
   const { createInvitation } = useCreateInvitation({
     invitation: activeInvitation,
@@ -81,11 +91,11 @@ export function ShareCollectionModalContainer({
   return (
     <ShareCollectionModal
       invitations={userInvitationsFiltered}
-      users={users}
-      setActiveUser={setActiveUser}
+      users={usersNotInvited}
+      setActiveUser={setActiveUserNotInvited}
       opened={opened}
       onClickBottomCreateInvitation={() => {
-        if (activeUser) {
+        if (activeUserNotInvited) {
           handleCreateInvitation(activeInvitation);
         }
         setOpened(false);
@@ -97,7 +107,7 @@ export function ShareCollectionModalContainer({
         setOpened(false);
       }}
       activeCollection={activeCollection}
-      activeUser={activeUser}
+      activeUser={activeUserNotInvited}
       onClose={() => {
         setOpened(false);
       }}

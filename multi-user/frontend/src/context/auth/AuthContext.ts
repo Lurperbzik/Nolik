@@ -5,11 +5,13 @@ export const AuthContext = createContext<{
   userId: number | null;
   login: () => void;
   logout: () => void;
+  token: string | null;
 }>({
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
   userId: null,
+  token: null,
 });
 
 export function useAuthContext() {

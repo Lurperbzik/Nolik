@@ -28,6 +28,9 @@ export function Navbar({ activeCollection, setActiveCollection }: NavbarProps) {
   const [filteredInvitedUsers, setFilteredInvitedUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [collectionInvitations, setCollectionInvitations] = useState<
+    Invitation[]
+  >([]);
 
   const { getCollections } = useGetCollections({
     setCollections,
@@ -65,6 +68,7 @@ export function Navbar({ activeCollection, setActiveCollection }: NavbarProps) {
     <WebSocketListener
       setCollections={setCollections}
       setInvitations={setInvitations}
+      setCollectionInvitations={setCollectionInvitations}
       setUsers={setUsers}
     >
       <CollectionsView

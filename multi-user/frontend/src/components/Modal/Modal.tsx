@@ -1,75 +1,53 @@
-import { Button, Modal, Space, Text } from "@mantine/core";
-import { useState } from "react";
-import { Form } from "../Form/Form";
-import { useForm } from "../Form/useForm";
-import { CustomAlert } from "../Alert/Alert";
+import { Button, Modal, Text, Space } from "@mantine/core";
 
-type ModalProps = {
+type CustomModalProps<T> = {
+  data: T;
+  endContent?: React.ReactNode;
+  modalTextField: keyof T;
   opened: boolean;
-  setOpened: (value: boolean) => void;
-  handleSubmit: () => void;
-  setOwner: (value: string) => void;
-  setName: (value: string) => void;
-  success: boolean;
-  error: boolean;
-  loading: boolean;
+  setOpened: (opened: boolean) => void;
+  onClose: () => void;
+  title: string;
+  text: string;
+  textSecondary?: string;
+  button: boolean;
+  colorButton?: string;
+  buttonText?: string;
+  onClickBottom: () => void;
 };
 
-export function AddModal({
+export function CustomModal<T>({
+  data,
+  modalTextField,
   opened,
+  onClose,
   setOpened,
-  handleSubmit,
-  setOwner,
-  setName,
-  success,
-  error,
-  loading,
-}: ModalProps) {
-  const [validInput, setValidInput] = useState(false);
-  const {
-    values: { valueOwner, valueName },
-    errors,
-    handlers,
-    validate,
-    reset,
-  } = useForm();
-
-  const handleSubmitButton = () => {
-    if (validate()) {
-      setOwner(valueOwner);
-      setName(valueName);
-      setValidInput(true);
-      handleSubmit();
-    } else {
-      setValidInput(false);
-    }
-  };
-
-  const handleClose = () => {
-    setOpened(false);
-    setValidInput(false);
-    reset();
-  };
-
+  title,
+  text,
+  textSecondary,
+  button,
+  buttonText,
+  colorButton,
+  onClickBottom,
+  endContent,
+}: CustomModalProps<T>) {
   return (
     <Modal
-      opened={opened || loading}
-      onClose={handleClose}
+      opened={opened}
+      onClose={() => {
+        setOpened(false);
+        onClose();
+      }}
       title={
-        <Text
-          fw={600}
-          size="xl"
-          style={{
-            marginTop: "2px",
-            color: "#333",
-          }}
-        >
-          Add Collection
-        </Text>
+        <>
+          <Text size="lg" fw="800" style={{ color: "#333" }}>
+            {title}{" "}
+            <Text size="lg" component="span" c="blue" fw="800">
+              {String(data[modalTextField])}
+            </Text>
+          </Text>
+        </>
       }
-      size="md"
-      overlayProps={{ backgroundOpacity: 0.55 }}
-      transitionProps={{ transition: "fade", duration: 100 }}
       styles={{
         content: {
           backgroundColor: "#f9f9f9",
@@ -81,7 +59,26 @@ export function AddModal({
       }}
     >
       <Space h="md" />
-      <Form errors={errors} handlers={handlers} />
+      {endContent ? (
+        endContent
+      ) : (
+        <>
+          <Text
+            style={{
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+              color: "#333",
+            }}
+            size="md"
+            fw="600"
+          >
+            {text}
+          </Text>
+          <Space h="md" />
+          <Text size="sm">{textSecondary}</Text>
+        </>
+      )}
+
       <hr
         style={{
           position: "relative",
@@ -91,25 +88,19 @@ export function AddModal({
           borderTop: "1px solid #e0e0e0",
         }}
       ></hr>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button color="#347D39" loading={loading} onClick={handleSubmitButton}>
-          <Text fw={600} size="md" style={{ marginTop: "2px", color: "#FFFF" }}>
-            Submit
-          </Text>
-        </Button>
-      </div>
-
-      {validInput && (
-        <CustomAlert
-          success={success}
-          error={error}
-          messageSuccess={
-            "Collection varified successfully! It may take a few minutes to load.\nYou can close this modal now."
-          }
-          messageError={
-            "Owner or collection not found, please try again.\nIf the collection is private, make sure you have the necessary permissions."
-          }
-        />
+      {button && (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="filled"
+            color={colorButton}
+            onClick={() => {
+              onClickBottom();
+              onClose();
+            }}
+          >
+            {buttonText}
+          </Button>
+        </div>
       )}
     </Modal>
   );

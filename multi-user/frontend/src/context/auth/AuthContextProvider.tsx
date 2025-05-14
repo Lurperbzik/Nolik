@@ -10,6 +10,7 @@ export default function AuthContextProvider({
 }: AuthContextProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   const checkAuth = useCallback(async () => {
     try {
@@ -20,6 +21,7 @@ export default function AuthContextProvider({
       if (res.ok) {
         const data = await res.json();
         setUserId(data.user);
+        setToken(data.token);
       }
       setIsAuthenticated(res.ok);
     } catch {
@@ -49,8 +51,9 @@ export default function AuthContextProvider({
       userId,
       login,
       logout,
+      token,
     }),
-    [isAuthenticated, login, logout, userId]
+    [isAuthenticated, login, logout, userId, token]
   );
 
   if (isAuthenticated === null) return;

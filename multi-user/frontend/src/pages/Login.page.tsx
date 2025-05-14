@@ -1,4 +1,4 @@
-import { AuthContainer } from "../prueba/AuthTitle/AuthContainer";
+import { AuthContainer } from "../components/AuthTitle/AuthContainer";
 export function LoginPage() {
   return <AuthContainer />;
 }

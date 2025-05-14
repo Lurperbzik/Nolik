@@ -12,51 +12,31 @@ import { MdOutlineEditNote } from "react-icons/md";
 import { FaArrowRightToBracket } from "react-icons/fa6";
 import { Issues } from "../Issues/Issues";
 import { UserInput } from "./UserInput";
-import { useSearchIssues } from "../../services/requests/Search/search";
-import { useAdvancedSearchIssues } from "../../services/requests/Search/advancedSearch";
 import { IssueJSON } from "../../models/Issue";
-import { ModalOptions, formProps } from "../ModalOptions/ModalOptions";
+import { ModalOptions, formProps } from "../Modal/SearchOptions/ModalOptions";
 
 interface ChatProps {
   collectionUrl: string;
+  form: formProps;
+  setForm: React.Dispatch<React.SetStateAction<formProps>>;
+  data: IssueJSON[];
+  setRequest: React.Dispatch<React.SetStateAction<boolean>>;
+  text: string;
+  setText: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export function Chat({ collectionUrl }: ChatProps) {
-  const [text, setText] = useState<string>("");
+export function Chat({
+  collectionUrl,
+  form,
+  setForm,
+  data,
+  setRequest,
+  text,
+  setText,
+}: ChatProps) {
   const [messages, setMessages] = useState<React.ReactNode>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [input, setInput] = useState<React.ReactNode>(null);
-  const [data, setData] = useState<IssueJSON[]>([]);
-
-  const [form, setForm] = useState<formProps>({
-    opened: false,
-    checked: false,
-    form: {
-      limit: 5,
-      requiredWords: [],
-      acceptedDeviation: 1000,
-      minNumComments: 0,
-      state: "closed",
-    },
-  });
-
-  const { searchIssues } = useSearchIssues({
-    params: { url: collectionUrl, message: text },
-    setData,
-  });
-
-  const { advancedSearchIssues } = useAdvancedSearchIssues({
-    params: {
-      url: collectionUrl,
-      message: text,
-      limit: form.form.limit,
-      requiredWords: form.form.requiredWords,
-      acceptedDeviation: form.form.acceptedDeviation,
-      minNumComments: form.form.minNumComments,
-      state: form.form.state,
-    },
-    setData,
-  });
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && (event.ctrlKey || event.shiftKey)) {
@@ -70,13 +50,7 @@ export function Chat({ collectionUrl }: ChatProps) {
         return;
       }
       setInput(newMessage);
-
-      if (form.checked) {
-        advancedSearchIssues();
-      } else {
-        searchIssues();
-      }
-      setText("");
+      setRequest(true);
     }
   };
 
@@ -209,12 +183,7 @@ export function Chat({ collectionUrl }: ChatProps) {
                   return;
                 }
                 setMessages(newMessage);
-                if (form.checked) {
-                  advancedSearchIssues();
-                } else {
-                  searchIssues();
-                }
-                setText("");
+                setRequest(true);
               }}
             >
               <FaArrowRightToBracket size="24" />
