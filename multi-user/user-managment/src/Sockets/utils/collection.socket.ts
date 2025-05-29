@@ -30,16 +30,11 @@ export class CollectionSocket {
   public async onAcceptCollection(userId: string | undefined) {
     if (!userId) return;
 
-    /*
     const collections: Collection[] =
       await this.collectionModel.getByUserIdFromDB({
         userId: parseInt(userId),
       });
-    */
 
-    const collections: Collection[] = await this.collectionModel.getByUserId({
-      userId: parseInt(userId),
-    });
     const socket = connectedUsers.get(userId);
     if (socket) {
       socket.emit("collections", collections);

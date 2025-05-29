@@ -13,7 +13,7 @@ import { deleteCollectionService } from "../services/requests/deleteCollection";
 const manager = new CollectionManager();
 const socket = new CollectionSocket();
 
-export const getCollections = () => async (req: CustomRequest, res: any) => {
+export const getCollections = async (req: CustomRequest, res: any) => {
   const userId = req.user;
   if (!userId) {
     res.status(400).json("Incorrect values");
@@ -48,7 +48,7 @@ export const getCollections = () => async (req: CustomRequest, res: any) => {
   }
 };
 
-export async function createCollection(req: CustomRequest, res: any) {
+export const createCollection = async (req: CustomRequest, res: any) => {
   const userId = req.user;
   if (!userId) {
     res.status(400).json("Incorrect values");
@@ -68,9 +68,9 @@ export async function createCollection(req: CustomRequest, res: any) {
       res.status(500).json({ error: "Unknown error" });
     }
   }
-}
+};
 
-export async function deleteCollection(req: CustomRequest, res: any) {
+export const deleteCollection = async (req: CustomRequest, res: any) => {
   const userId = req.user;
   if (!userId) {
     res.status(400).json("Incorrect values");
@@ -104,4 +104,4 @@ export async function deleteCollection(req: CustomRequest, res: any) {
       res.status(500).json({ error: "Unknown error" });
     }
   }
-}
+};
