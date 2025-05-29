@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthTitle } from "./AuthTitle";
 import { useLogin } from "../../services/requests/login";
 import { useAuthContext } from "../../context/auth/AuthContext";
@@ -7,7 +7,7 @@ import { useAuthContext } from "../../context/auth/AuthContext";
 export function AuthContainer() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login: setAuthenticated } = useAuthContext();
+  const { login: setAuthenticated, isAuthenticated } = useAuthContext();
 
   const navigate = useNavigate();
   const { login, loading, error } = useLogin({
@@ -22,9 +22,15 @@ export function AuthContainer() {
     const success = await login();
     if (success) {
       setAuthenticated();
-      navigate("/");
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
 
   return (
     <AuthTitle

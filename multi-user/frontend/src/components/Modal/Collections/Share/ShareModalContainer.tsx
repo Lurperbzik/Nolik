@@ -41,10 +41,15 @@ export function ShareCollectionModalContainer({
   });
 
   useEffect(() => {
-    const invitedUserIds = userInvitations.map((inv) => inv.invitedUserId);
+    const invitationsByCollection = userInvitations.filter(
+      (invitation) => invitation.urlCollection === activeCollection?.url
+    );
+    const invitedUserIds = invitationsByCollection.map(
+      (inv) => inv.invitedUserId
+    );
     const filtered = users.filter((user) => !invitedUserIds.includes(user.id));
     setUsersNotInvited(filtered);
-  }, [userInvitations, activeUserNotInvited, users]);
+  }, [userInvitations, activeUserNotInvited, users, activeCollection]);
 
   useEffect(() => {
     const filtered = userInvitations.filter(

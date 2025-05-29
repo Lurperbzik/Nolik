@@ -1,14 +1,10 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth";
-import * as collectionController from "../controller/collection.controller";
+import * as collectionController from "../Collection/collection.controller";
 
 const router = Router();
 
-router.get(
-  "/",
-  authenticate,
-  collectionController.getCollections({ owned: false })
-);
+router.get("/", authenticate, collectionController.getCollections());
 router.get(
   "/owned",
   authenticate,

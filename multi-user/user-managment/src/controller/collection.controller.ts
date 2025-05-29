@@ -8,8 +8,10 @@ import {
 } from "../services/requests/getCollections.service";
 import { createCollectionService } from "../services/requests/createCollection";
 import { deleteCollectionService } from "../services/requests/deleteCollection";
+import { CollectionSocket } from "../Sockets/utils/collection.socket";
 
 const model = new Model();
+const collectionSocket = new CollectionSocket();
 
 export const getCollections =
   ({ owned = false }: { owned?: boolean }) =>
@@ -128,7 +130,6 @@ export const createCollection = async (req: CustomRequest, res: any) => {
   try {
     await createCollectionService(collection);
     res.status(200).json("Collection created");
-    return;
   } catch (err: any) {
     if (err instanceof HttpException) {
       if (err.statusCode === 400) {
@@ -141,5 +142,7 @@ export const createCollection = async (req: CustomRequest, res: any) => {
       res.status(500).json({ error: "Unknown error" });
     }
     await model.deleteCollection(collection, userId);
+    return;
   }
+  collectionSocket.onCreateCollection(userId);
 };

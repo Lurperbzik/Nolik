@@ -13,6 +13,7 @@ CREATE TABLE collections (
     owner VARCHAR(100) NOT NULL,
     url VARCHAR(255) NOT NULL,
     platform VARCHAR(50) NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('loading', 'completed')) DEFAULT 'loading',
     owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 

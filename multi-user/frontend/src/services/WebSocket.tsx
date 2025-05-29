@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { io } from "socket.io-client";
+import React, { useEffect, useRef } from "react";
+import { io, Socket } from "socket.io-client";
 import { useAuthContext } from "../context/auth/AuthContext";
 import { Collection } from "../models/Collection";
 import { Invitation } from "../models/Invitation";
@@ -21,6 +21,7 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
   children,
 }) => {
   const { token, isAuthenticated } = useAuthContext();
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated || !token) return;
@@ -30,32 +31,33 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
       transports: ["websocket"],
     });
 
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      console.log("✅ Socket conectado");
+    });
+
     socket.on("collections", (payload: Collection[]) => {
+      console.log("Collections received:", payload);
       setCollections(payload);
     });
 
-    socket.on("invitations", (payload: Invitation[]) => {
-      setInvitations(payload);
-    });
-
-    socket.on("users", (payload: User[]) => {
-      setUsers(payload);
-    });
-
-    socket.on("collection-invitations", (payload: Invitation[]) => {
-      setCollectionInvitations(payload);
-    });
+    socket.on("invitations", setInvitations);
+    socket.on("users", setUsers);
+    socket.on("collection-invitations", setCollectionInvitations);
 
     socket.on("connect_error", (err: Error) => {
       console.error("Socket connection error:", err.message);
     });
 
+    // Cleanup solo al desmontar el componente (no al recargar sin cerrar sesión)
     return () => {
+      console.log("⛔ Desmontando socket");
       socket.disconnect();
     };
   }, [
-    token,
     isAuthenticated,
+    token,
     setCollections,
     setInvitations,
     setUsers,
