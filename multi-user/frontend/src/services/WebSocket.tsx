@@ -7,7 +7,8 @@ import { User } from "../models/User";
 
 interface WebSocketListenerProps {
   setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
-  setInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
+  setSentInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
+  setReceivedInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
   setCollectionInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   children?: React.ReactNode;
@@ -15,7 +16,8 @@ interface WebSocketListenerProps {
 
 export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
   setCollections,
-  setInvitations,
+  setReceivedInvitations,
+  setSentInvitations,
   setCollectionInvitations,
   setUsers,
   children,
@@ -42,7 +44,8 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
       setCollections(payload);
     });
 
-    socket.on("invitations", setInvitations);
+    socket.on("sentInvitations", setSentInvitations);
+    socket.on("receivedInvitations", setReceivedInvitations);
     socket.on("users", setUsers);
     socket.on("collection-invitations", setCollectionInvitations);
 
@@ -58,7 +61,8 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
     isAuthenticated,
     token,
     setCollections,
-    setInvitations,
+    setReceivedInvitations,
+    setSentInvitations,
     setUsers,
     setCollectionInvitations,
   ]);

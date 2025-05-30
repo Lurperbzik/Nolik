@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
 import { CollectionManager } from "../Collection/collection.manager";
+import { InvitationManager } from "../Invitation/invitation.manager";
 
 interface TokenPayload {
   userId: string;
@@ -14,6 +15,7 @@ const JWT_SECRET = process.env.JWTPRIVATEKEY || "defaultSecretKey";
 
 export const connectedUsers = new Map<number, Socket>();
 const collectionManager = CollectionManager.getInstance();
+const invitationManager = InvitationManager.getInstance();
 
 export function setupWebSocket(server: http.Server) {
   const io = new Server(server, {
@@ -44,6 +46,7 @@ export function setupWebSocket(server: http.Server) {
     collectionManager.getByUserIdFromDB({
       userId: parseInt(socket.data.userId),
     });
+    invitationManager.getByUserIdFromDB(parseInt(socket.data.userId));
 
     socket.on("disconnect", () => {
       console.log(`🔴 Usuario desconectado: ${socket.data.userId}`);
@@ -51,6 +54,7 @@ export function setupWebSocket(server: http.Server) {
       collectionManager.removeFromCacheByUserId({
         userId: parseInt(socket.data.userId),
       });
+      invitationManager.removeFromCacheByUserId(parseInt(socket.data.userId));
     });
   });
 

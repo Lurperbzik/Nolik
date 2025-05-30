@@ -3,6 +3,7 @@ import { Collection } from "./collection.model";
 import { CustomRequest } from "../middleware/auth";
 import { CollectionManager } from "./collection.manager";
 import { CollectionSocket } from "../Sockets/utils/collection.socket";
+import { InvitationSocket } from "../Sockets/utils/invitation.socket";
 import {
   getCollectionsService,
   CollectionService,
@@ -12,6 +13,7 @@ import { deleteCollectionService } from "../services/requests/deleteCollection";
 
 const manager = CollectionManager.getInstance();
 const socket = new CollectionSocket();
+const invitationSocket = new InvitationSocket();
 
 export const getCollections = async (req: CustomRequest, res: any) => {
   const userId = req.user;
@@ -110,6 +112,10 @@ export const deleteCollection = async (req: CustomRequest, res: any) => {
       await deleteCollectionService(collection.url);
     }
     await socket.onDeleteCollection(updatedCollections);
+    await invitationSocket.onDeleteCollection(
+      collection.url,
+      collection.ownerId
+    );
     res.status(200).json("Collection deleted successfully");
   } catch (err: any) {
     if (err instanceof HttpException) {
