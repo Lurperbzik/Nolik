@@ -10,7 +10,11 @@ export class UserDao {
     }
     try {
       const existingUser = await pool.query(
-        "SELECT * FROM users WHERE username = $1",
+        `
+        SELECT * 
+        FROM users 
+        WHERE username = $1
+        `,
         [user.username]
       );
 
@@ -22,7 +26,12 @@ export class UserDao {
       const hashedPassword = await bcrypt.hash(user.password, saltRounds);
 
       const result = await pool.query(
-        "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
+        `
+        INSERT INTO users 
+        (username, password) 
+        VALUES ($1, $2) 
+        RETURNING *
+        `,
         [user.username, hashedPassword]
       );
 
@@ -40,13 +49,20 @@ export class UserDao {
       throw new HttpException("User ID is required", 400);
     }
     return new Promise((resolve, reject) => {
-      pool.query("DELETE FROM users WHERE id = $1", [user.id], async (err) => {
-        if (err) {
-          reject(new HttpException(err.message, 500));
-          return;
+      pool.query(
+        `
+        DELETE FROM users 
+        WHERE id = $1
+        `,
+        [user.id],
+        async (err) => {
+          if (err) {
+            reject(new HttpException(err.message, 500));
+            return;
+          }
+          resolve(`User ${user.username} deleted successfully`);
         }
-        resolve(`User ${user.username} deleted successfully`);
-      });
+      );
     });
   }
 
@@ -58,7 +74,11 @@ export class UserDao {
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
 
     return new Promise((resolve, reject) => {
-      const query = `UPDATE USERS SET password = $1, role = $2 WHERE id = $3`;
+      const query = `
+      UPDATE USERS 
+      SET password = $1, role = $2 
+      WHERE id = $3
+      `;
       const values = [hashedPassword, user.role, user.id];
 
       pool.query(query, values, (err, res) => {
@@ -80,22 +100,28 @@ export class UserDao {
 
   public async getAll(): Promise<{ id: number; username: string }[]> {
     return new Promise((resolve, reject) => {
-      pool.query("SELECT id, username FROM users", (err, res) => {
-        if (err) {
-          reject(new HttpException(err.message, 500));
-        } else {
-          if (res.rows.length === 0) {
-            resolve([]);
-            return;
-          }
+      pool.query(
+        `
+        SELECT id, username 
+        FROM users
+        `,
+        (err, res) => {
+          if (err) {
+            reject(new HttpException(err.message, 500));
+          } else {
+            if (res.rows.length === 0) {
+              resolve([]);
+              return;
+            }
 
-          const users = res.rows.map((row: any) => ({
-            id: row.id,
-            username: row.username,
-          }));
-          resolve(users);
+            const users = res.rows.map((row: any) => ({
+              id: row.id,
+              username: row.username,
+            }));
+            resolve(users);
+          }
         }
-      });
+      );
     });
   }
 }

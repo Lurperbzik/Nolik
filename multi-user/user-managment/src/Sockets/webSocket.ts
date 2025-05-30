@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
+import { CollectionManager } from "../Collection/collection.manager";
 
 interface TokenPayload {
   userId: string;
@@ -11,7 +12,8 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWTPRIVATEKEY || "defaultSecretKey";
 
-export const connectedUsers = new Map<string, Socket>();
+export const connectedUsers = new Map<number, Socket>();
+const collectionManager = CollectionManager.getInstance();
 
 export function setupWebSocket(server: http.Server) {
   const io = new Server(server, {
@@ -23,7 +25,6 @@ export function setupWebSocket(server: http.Server) {
   });
 
   io.use((socket, next) => {
-    console.log("Middleware de autenticación de WebSocket");
     const token = socket.handshake.auth.token;
     if (!token) {
       return next(new Error("Authentication error"));
@@ -33,7 +34,6 @@ export function setupWebSocket(server: http.Server) {
       socket.data.userId = decoded.userId;
       next();
     } catch (err) {
-      console.error("Invalid token:", err);
       return next(new Error("Authentication error"));
     }
   });
@@ -41,10 +41,16 @@ export function setupWebSocket(server: http.Server) {
   io.on("connection", (socket) => {
     console.log(`🟢 Usuario conectado: ${socket.data.userId}`);
     connectedUsers.set(socket.data.userId, socket);
+    collectionManager.getByUserIdFromDB({
+      userId: parseInt(socket.data.userId),
+    });
 
     socket.on("disconnect", () => {
       console.log(`🔴 Usuario desconectado: ${socket.data.userId}`);
       connectedUsers.delete(socket.data.userId);
+      collectionManager.removeFromCacheByUserId({
+        userId: parseInt(socket.data.userId),
+      });
     });
   });
 

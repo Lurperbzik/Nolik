@@ -9,14 +9,22 @@ export class CollectionDao {
     }
     try {
       const existingCollection = await pool.query(
-        "SELECT * FROM collections WHERE url = $1 AND owner_id = $2",
+        `
+        SELECT * FROM collections 
+        WHERE url = $1 AND owner_id = $2
+        `,
         [collection.url, collection.ownerId]
       );
       if (existingCollection.rows.length > 0) {
         throw new HttpException("Collection already exists", 400);
       }
       const existingMember = await pool.query(
-        "SELECT c.* FROM collections c INNER JOIN collection_invites ci ON c.id = ci.collection_id WHERE ci.invited_user_id = $1 AND c.url = $2",
+        `
+        SELECT c.* 
+        FROM collections c 
+        INNER JOIN collection_invites ci ON c.id = ci.collection_id 
+        WHERE ci.invited_user_id = $1 AND c.url = $2
+        `,
         [collection.ownerId, collection.url]
       );
       if (existingMember.rows.length > 0) {
@@ -24,7 +32,11 @@ export class CollectionDao {
       }
 
       await pool.query(
-        "INSERT INTO collections (name, owner, url, platform, owner_id) VALUES ($1, $2, $3, $4, $5)",
+        `
+        INSERT INTO collections 
+        (name, owner, url, platform, owner_id) 
+        VALUES ($1, $2, $3, $4, $5)
+        `,
         [
           collection.name,
           collection.owner,
@@ -44,7 +56,11 @@ export class CollectionDao {
   public async update(collection: Collection): Promise<void> {
     try {
       await pool.query(
-        "UPDATE collections SET status = $1 WHERE url = $2 AND owner_id = $3",
+        `
+        UPDATE collections 
+        SET status = $1
+        WHERE url = $2 AND owner_id = $3
+        `,
         [collection.status, collection.url, collection.ownerId]
       );
     } catch (error: any) {
@@ -58,7 +74,10 @@ export class CollectionDao {
   public async delete(collection: Collection): Promise<boolean> {
     try {
       const result = await pool.query(
-        "DELETE FROM collections WHERE url = $1 AND owner_id = $2",
+        `
+        DELETE FROM collections 
+        WHERE url = $1 AND owner_id = $2
+        `,
         [collection.url, collection.ownerId]
       );
       if (result.rowCount === 0) {
@@ -75,7 +94,12 @@ export class CollectionDao {
 
   public async getAll(): Promise<Collection[]> {
     try {
-      const result = await pool.query("SELECT * FROM collections");
+      const result = await pool.query(
+        `
+        SELECT * 
+        FROM collections
+        `
+      );
       if (result.rows.length > 0) {
         return result.rows.map((row: any) => {
           return new Collection({
@@ -102,12 +126,20 @@ export class CollectionDao {
   }): Promise<Collection[]> {
     try {
       const result1 = await pool.query(
-        "SELECT * FROM collections WHERE owner_id = $1",
+        `
+        SELECT * FROM collections 
+        WHERE owner_id = $1
+        `,
         [userId]
       );
 
       const result2 = await pool.query(
-        "SELECT c.* FROM collection_members cm JOIN collections c ON cm.collection_id = c.id WHERE cm.user_id = $1",
+        `
+        SELECT c.* 
+        FROM collection_members cm 
+        JOIN collections c ON cm.collection_id = c.id 
+        WHERE cm.user_id = $1
+        `,
         [userId]
       );
 

@@ -5,8 +5,9 @@ import { HttpException } from "../model/exception";
 export class UserManager {
   private usersCache: Map<number, UserResponse> = new Map();
   private dao: UserDao = new UserDao();
+  private static instance: UserManager;
 
-  constructor() {
+  private constructor() {
     try {
       this.refresh();
     } catch (error: any) {
@@ -15,6 +16,13 @@ export class UserManager {
       }
       throw new HttpException(error.message, 500);
     }
+  }
+
+  public static getInstance(): UserManager {
+    if (!UserManager.instance) {
+      UserManager.instance = new UserManager();
+    }
+    return UserManager.instance;
   }
 
   public async create(user: User): Promise<String> {

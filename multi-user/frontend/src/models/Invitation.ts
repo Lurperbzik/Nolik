@@ -13,5 +13,5 @@ export interface Invitation {
 
 export interface ShortInvitation {
   collectionUrl: string;
-  invitedUsername: string;
+  invitedUsername: number;
 }

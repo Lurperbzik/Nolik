@@ -9,8 +9,8 @@ async function test_signup() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username: "third",
-      password: "third",
+      username: "first",
+      password: "first",
     }),
   });
 

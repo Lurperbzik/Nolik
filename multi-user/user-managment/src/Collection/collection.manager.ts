@@ -3,8 +3,18 @@ import { CollectionDao } from "./collection.dao";
 import { HttpException } from "../model/exception";
 
 export class CollectionManager {
+  private static instance: CollectionManager;
   private collectionsCache: Map<number, Collection[]> = new Map();
   private dao: CollectionDao = new CollectionDao();
+
+  private constructor() {}
+
+  public static getInstance(): CollectionManager {
+    if (!CollectionManager.instance) {
+      CollectionManager.instance = new CollectionManager();
+    }
+    return CollectionManager.instance;
+  }
 
   public async create(collection: Collection): Promise<void> {
     if (!collection.ownerId) {
@@ -72,17 +82,9 @@ export class CollectionManager {
       throw new HttpException("User id and status are required", 400);
     }
     try {
-      const result = await this.dao.update(collection);
-      const existingCollections =
-        this.collectionsCache.get(collection.ownerId) || [];
-      const index = existingCollections.findIndex(
-        (c) => c.url === collection.url
-      );
-      if (index !== -1) {
-        existingCollections[index] = collection;
-      }
-      this.collectionsCache.set(collection.ownerId, existingCollections);
-      return result;
+      await this.dao.update(collection);
+      this.getByUserIdFromDB({ userId: collection.ownerId });
+      return;
     } catch (error: any) {
       if (error instanceof HttpException) {
         throw error;

@@ -3,10 +3,21 @@ import { InvitationDao } from "./invitation.dao";
 import { HttpException } from "../model/exception";
 
 export class InvitationManager {
+  private static instance: InvitationManager;
+  // Cache to store invitations by userId -> invitationsTO and invitationsFROM
   private invitationsCache: Map<number, Invitation[]> = new Map();
   private dao: InvitationDao = new InvitationDao();
 
-  private async getByUserIdFromDB(userId: number): Promise<Invitation[]> {
+  private constructor() {}
+
+  public static getInstance(): InvitationManager {
+    if (!InvitationManager.instance) {
+      InvitationManager.instance = new InvitationManager();
+    }
+    return InvitationManager.instance;
+  }
+
+  public async getByUserIdFromDB(userId: number): Promise<Invitation[]> {
     try {
       const response = await this.dao.getByUserId({
         userId: userId.toString(),
@@ -21,12 +32,30 @@ export class InvitationManager {
     }
   }
 
-  public async getByUserId(userId: number): Promise<Invitation[]> {
+  public getReceivedByUserId(userId: number): Invitation[] {
+    const invitations = this.invitationsCache.get(userId) || [];
+    return invitations.filter((inv) => inv.invitedUserId === userId);
+  }
+
+  public getSentByUserId(userId: number): Invitation[] {
+    const invitations = this.invitationsCache.get(userId) || [];
+    return invitations.filter((inv) => inv.invitedByUserId === userId);
+  }
+
+  public async create(invitation: ResponseInvitation): Promise<number[]> {
     try {
-      if (this.invitationsCache.has(userId)) {
-        return this.invitationsCache.get(userId) || [];
+      await this.dao.create(invitation);
+      let updatedInvitations: number[] = [];
+      if (this.invitationsCache.has(invitation.invitedUserId)) {
+        await this.getByUserIdFromDB(invitation.invitedUserId);
+        updatedInvitations.push(invitation.invitedUserId);
       }
-      return await this.getByUserIdFromDB(userId);
+
+      if (this.invitationsCache.has(invitation.invitedByUserId)) {
+        await this.getByUserIdFromDB(invitation.invitedByUserId);
+        updatedInvitations.push(invitation.invitedByUserId);
+      }
+      return updatedInvitations;
     } catch (error: any) {
       if (error instanceof HttpException) {
         throw error;
@@ -35,41 +64,10 @@ export class InvitationManager {
     }
   }
 
-  public async getByCollectionUrl({
-    collectionUrl,
-    userId,
-  }: {
-    collectionUrl: string;
-    userId: number;
-  }): Promise<Invitation[]> {
-    try {
-      const response = await this.dao.getByCollectionUrl({
-        collectionUrl,
-        userId: userId.toString(),
-      });
-      return response;
-    } catch (error: any) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      throw new HttpException(error.message, 500);
-    }
-  }
-
-  public async create(invitation: ResponseInvitation): Promise<void> {
-    try {
-      return await this.dao.create(invitation);
-    } catch (error: any) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      throw new HttpException(error.message, 500);
-    }
-  }
-
-  public async delete(invitation: Invitation): Promise<boolean> {
+  public async delete(invitation: Invitation): Promise<number[]> {
     try {
       await this.dao.delete(invitation);
+      let updatedInvitations: number[] = [];
       if (this.invitationsCache.has(invitation.invitedUserId)) {
         const cachedInvitations =
           this.invitationsCache.get(invitation.invitedUserId) || [];
@@ -79,8 +77,20 @@ export class InvitationManager {
             (inv) => inv.collectionId !== invitation.collectionId
           )
         );
+        updatedInvitations.push(invitation.invitedUserId);
       }
-      return true;
+      if (this.invitationsCache.has(invitation.invitedByUserId)) {
+        const cachedInvitations =
+          this.invitationsCache.get(invitation.invitedByUserId) || [];
+        this.invitationsCache.set(
+          invitation.invitedByUserId,
+          cachedInvitations.filter(
+            (inv) => inv.collectionId !== invitation.collectionId
+          )
+        );
+        updatedInvitations.push(invitation.invitedByUserId);
+      }
+      return updatedInvitations;
     } catch (error: any) {
       if (error instanceof HttpException) {
         throw error;
@@ -89,9 +99,11 @@ export class InvitationManager {
     }
   }
 
-  public async accept(invitation: Invitation): Promise<void> {
+  public async accept(invitation: Invitation): Promise<number[]> {
+    invitation.status = "accepted";
     try {
       await this.dao.accept(invitation);
+      let updatedInvitations: number[] = [];
       if (this.invitationsCache.has(invitation.invitedUserId)) {
         const cachedInvitations =
           this.invitationsCache.get(invitation.invitedUserId) || [];
@@ -101,7 +113,20 @@ export class InvitationManager {
             (inv) => inv.collectionId !== invitation.collectionId
           )
         );
+        updatedInvitations.push(invitation.invitedUserId);
       }
+      if (this.invitationsCache.has(invitation.invitedByUserId)) {
+        const cachedInvitations =
+          this.invitationsCache.get(invitation.invitedByUserId) || [];
+        this.invitationsCache.set(invitation.invitedByUserId, [
+          ...cachedInvitations.filter(
+            (inv) => inv.collectionId !== invitation.collectionId
+          ),
+          invitation,
+        ]);
+        updatedInvitations.push(invitation.invitedByUserId);
+      }
+      return updatedInvitations;
     } catch (error: any) {
       if (error instanceof HttpException) {
         throw error;
@@ -110,9 +135,10 @@ export class InvitationManager {
     }
   }
 
-  public async decline(invitation: Invitation): Promise<void> {
+  public async decline(invitation: Invitation): Promise<number[]> {
     try {
       await this.dao.decline(invitation);
+      let updatedInvitations: number[] = [];
       if (this.invitationsCache.has(invitation.invitedUserId)) {
         const cachedInvitations =
           this.invitationsCache.get(invitation.invitedUserId) || [];
@@ -122,7 +148,20 @@ export class InvitationManager {
             (inv) => inv.collectionId !== invitation.collectionId
           )
         );
+        updatedInvitations.push(invitation.invitedUserId);
       }
+      if (this.invitationsCache.has(invitation.invitedByUserId)) {
+        const cachedInvitations =
+          this.invitationsCache.get(invitation.invitedByUserId) || [];
+        this.invitationsCache.set(
+          invitation.invitedByUserId,
+          cachedInvitations.filter(
+            (inv) => inv.collectionId !== invitation.collectionId
+          )
+        );
+        updatedInvitations.push(invitation.invitedByUserId);
+      }
+      return updatedInvitations;
     } catch (error: any) {
       if (error instanceof HttpException) {
         throw error;

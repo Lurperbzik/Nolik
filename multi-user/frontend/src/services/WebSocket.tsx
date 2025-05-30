@@ -50,7 +50,6 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
       console.error("Socket connection error:", err.message);
     });
 
-    // Cleanup solo al desmontar el componente (no al recargar sin cerrar sesión)
     return () => {
       console.log("⛔ Desmontando socket");
       socket.disconnect();

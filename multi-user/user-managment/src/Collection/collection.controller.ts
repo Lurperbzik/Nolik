@@ -10,7 +10,7 @@ import {
 import { createCollectionService } from "../services/requests/createCollection";
 import { deleteCollectionService } from "../services/requests/deleteCollection";
 
-const manager = new CollectionManager();
+const manager = CollectionManager.getInstance();
 const socket = new CollectionSocket();
 
 export const getCollections = async (req: CustomRequest, res: any) => {
@@ -34,9 +34,9 @@ export const getCollections = async (req: CustomRequest, res: any) => {
   try {
     const collectionsService: CollectionService[] =
       await getCollectionsService();
-    const result = new Set(collections.map((item) => item.url));
-    const matchingCollections = collectionsService.filter((item) =>
-      result.has(item.url)
+    const serviceUrls = new Set(collectionsService.map((item) => item.url));
+    const matchingCollections = collections.filter((item) =>
+      serviceUrls.has(item.url)
     );
     res.status(200).json(matchingCollections);
   } catch (err: any) {
@@ -56,10 +56,24 @@ export const createCollection = async (req: CustomRequest, res: any) => {
   }
   const collection: Collection = req.body;
   collection.ownerId = parseInt(userId);
+  collection.status = "loading";
   try {
-    await createCollectionService(collection);
     await manager.create(collection);
     await socket.onCreateCollection(userId);
+    try {
+      await createCollectionService(collection);
+    } catch (err: any) {
+      if (err instanceof HttpException) {
+        res.status(err.statusCode).json({ error: err.message });
+        return;
+      } else {
+        res.status(500).json({ error: "Unknown error" });
+        return;
+      }
+    }
+    collection.status = "completed";
+    await manager.update(collection);
+    await socket.onUpdateCollection(collection);
     res.status(201).json("Collection created successfully");
   } catch (err: any) {
     if (err instanceof HttpException) {

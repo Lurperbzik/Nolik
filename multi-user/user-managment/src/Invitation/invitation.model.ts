@@ -1,7 +1,7 @@
 interface ResponseInvitationInterface {
   collectionUrl: string;
   invitedByUserId: number;
-  invitedUsername: string;
+  invitedUsername: number;
 }
 
 interface InvitationInterface {
@@ -19,12 +19,12 @@ interface InvitationInterface {
 
 export class ResponseInvitation {
   public collectionUrl: string;
-  public invitedUsername: string;
+  public invitedUserId: number;
   public invitedByUserId: number;
 
   constructor(data: ResponseInvitationInterface) {
     this.collectionUrl = data.collectionUrl;
-    this.invitedUsername = data.invitedUsername;
+    this.invitedUserId = data.invitedUsername;
     this.invitedByUserId = data.invitedByUserId;
   }
 
@@ -35,7 +35,7 @@ export class ResponseInvitation {
   toJson(): any {
     return {
       collectionUrl: this.collectionUrl,
-      invitedUsername: this.invitedUsername,
+      invitedUsername: this.invitedUserId,
       invitedByUserId: this.invitedByUserId,
     };
   }

@@ -67,7 +67,7 @@ export function ShareCollectionModalContainer({
     if (activeUserNotInvited && activeCollection) {
       const newInvitation: ShortInvitation = {
         collectionUrl: activeCollection.url,
-        invitedUsername: activeUserNotInvited.username,
+        invitedUsername: activeUserNotInvited.id,
       };
       setActiveInvitation(newInvitation);
     }
