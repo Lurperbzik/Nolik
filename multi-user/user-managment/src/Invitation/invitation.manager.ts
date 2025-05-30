@@ -32,12 +32,18 @@ export class InvitationManager {
     }
   }
 
-  public getReceivedByUserId(userId: number): Invitation[] {
+  public async getReceivedByUserId(userId: number): Promise<Invitation[]> {
+    if (!this.invitationsCache.has(userId)) {
+      await this.getByUserIdFromDB(userId);
+    }
     const invitations = this.invitationsCache.get(userId) || [];
     return invitations.filter((inv) => inv.invitedUserId === userId);
   }
 
-  public getSentByUserId(userId: number): Invitation[] {
+  public async getSentByUserId(userId: number): Promise<Invitation[]> {
+    if (!this.invitationsCache.has(userId)) {
+      await this.getByUserIdFromDB(userId);
+    }
     const invitations = this.invitationsCache.get(userId) || [];
     return invitations.filter((inv) => inv.invitedByUserId === userId);
   }

@@ -46,6 +46,7 @@ export function setupWebSocket(server: http.Server) {
     collectionManager.getByUserIdFromDB({
       userId: parseInt(socket.data.userId),
     });
+
     invitationManager.getByUserIdFromDB(parseInt(socket.data.userId));
 
     socket.on("disconnect", () => {

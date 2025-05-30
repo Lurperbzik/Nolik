@@ -42,6 +42,20 @@ export class CollectionSocket {
     }
   }
 
+  public async onDeleteInvitation(invitedUserId: number) {
+    if (!invitedUserId) return;
+
+    const collections: Collection[] =
+      await this.collectionManager.getByUserIdFromDB({
+        userId: invitedUserId,
+      });
+
+    const socket = connectedUsers.get(invitedUserId);
+    if (socket) {
+      socket.emit("collections", collections);
+    }
+  }
+
   public async onUpdateCollection(collection: Collection) {
     if (!collection) return;
 

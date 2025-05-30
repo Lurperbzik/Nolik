@@ -15,9 +15,8 @@ export const getReceivedInvitations = async (req: CustomRequest, res: any) => {
     res.status(400).json("Incorrect values");
     return;
   }
-  let invitations: Invitation[] = [];
   try {
-    invitations = manager.getReceivedByUserId(parseInt(userId));
+    const invitations = await manager.getReceivedByUserId(parseInt(userId));
     res.status(200).json(invitations);
   } catch (err: any) {
     if (err instanceof HttpException) {
@@ -34,9 +33,8 @@ export const getSentInvitations = async (req: CustomRequest, res: any) => {
     res.status(400).json("Incorrect values");
     return;
   }
-  let invitations: Invitation[] = [];
   try {
-    invitations = manager.getSentByUserId(parseInt(userId));
+    const invitations = await manager.getSentByUserId(parseInt(userId));
     res.status(200).json(invitations);
   } catch (err: any) {
     if (err instanceof HttpException) {
@@ -70,7 +68,7 @@ export const createInvitation = async (req: CustomRequest, res: any) => {
 
 export const deleteInvitation = async (req: CustomRequest, res: any) => {
   const userId = req.user;
-  if (!userId) {
+  if (!userId || userId !== req.body.invitedByUserId) {
     res.status(400).json("Incorrect values");
     return;
   }
@@ -79,6 +77,7 @@ export const deleteInvitation = async (req: CustomRequest, res: any) => {
   try {
     await manager.delete(invitation);
     await socket.onDeleteInvitation(invitation);
+    await collectionSocket.onDeleteInvitation(invitation.invitedUserId);
     res.status(200).json("Invitation deleted successfully");
   } catch (err: any) {
     if (err instanceof HttpException) {

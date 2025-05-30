@@ -12,36 +12,40 @@ export class InvitationSocket {
   public async onCreateInvitation(invitation: ResponseInvitation) {
     if (!invitation) return;
 
-    await this.invitationManager.create(invitation);
     let socket = connectedUsers.get(invitation.invitedUserId);
     if (socket) {
       const invitations: Invitation[] =
-        this.invitationManager.getReceivedByUserId(invitation.invitedUserId);
+        await this.invitationManager.getReceivedByUserId(
+          invitation.invitedUserId
+        );
       socket.emit("receivedInvitations", invitations);
     }
     socket = connectedUsers.get(invitation.invitedByUserId);
     if (socket) {
-      const invitations: Invitation[] = this.invitationManager.getSentByUserId(
-        invitation.invitedByUserId
-      );
+      const invitations: Invitation[] =
+        await this.invitationManager.getSentByUserId(
+          invitation.invitedByUserId
+        );
       socket.emit("sentInvitations", invitations);
     }
   }
 
   public async onDeleteInvitation(invitation: Invitation) {
     if (!invitation) return;
-    await this.invitationManager.delete(invitation);
     let socket = connectedUsers.get(invitation.invitedUserId);
     if (socket) {
       const invitations: Invitation[] =
-        this.invitationManager.getReceivedByUserId(invitation.invitedUserId);
+        await this.invitationManager.getReceivedByUserId(
+          invitation.invitedUserId
+        );
       socket.emit("receivedInvitations", invitations);
     }
     socket = connectedUsers.get(invitation.invitedByUserId);
     if (socket) {
-      const invitations: Invitation[] = this.invitationManager.getSentByUserId(
-        invitation.invitedByUserId
-      );
+      const invitations: Invitation[] =
+        await this.invitationManager.getSentByUserId(
+          invitation.invitedByUserId
+        );
       socket.emit("sentInvitations", invitations);
     }
   }
@@ -49,18 +53,20 @@ export class InvitationSocket {
   public async onAcceptInvitation(invitation: Invitation) {
     if (!invitation) return;
 
-    await this.invitationManager.accept(invitation);
     let socket = connectedUsers.get(invitation.invitedUserId);
     if (socket) {
       const invitations: Invitation[] =
-        this.invitationManager.getReceivedByUserId(invitation.invitedUserId);
+        await this.invitationManager.getReceivedByUserId(
+          invitation.invitedUserId
+        );
       socket.emit("receivedInvitations", invitations);
     }
     socket = connectedUsers.get(invitation.invitedByUserId);
     if (socket) {
-      const invitations: Invitation[] = this.invitationManager.getSentByUserId(
-        invitation.invitedByUserId
-      );
+      const invitations: Invitation[] =
+        await this.invitationManager.getSentByUserId(
+          invitation.invitedByUserId
+        );
       socket.emit("sentInvitations", invitations);
     }
   }
@@ -68,18 +74,20 @@ export class InvitationSocket {
   public async onDeclineInvitation(invitation: Invitation) {
     if (!invitation) return;
 
-    await this.invitationManager.decline(invitation);
     let socket = connectedUsers.get(invitation.invitedUserId);
     if (socket) {
       const invitations: Invitation[] =
-        this.invitationManager.getReceivedByUserId(invitation.invitedUserId);
+        await this.invitationManager.getReceivedByUserId(
+          invitation.invitedUserId
+        );
       socket.emit("receivedInvitations", invitations);
     }
     socket = connectedUsers.get(invitation.invitedByUserId);
     if (socket) {
-      const invitations: Invitation[] = this.invitationManager.getSentByUserId(
-        invitation.invitedByUserId
-      );
+      const invitations: Invitation[] =
+        await this.invitationManager.getSentByUserId(
+          invitation.invitedByUserId
+        );
       socket.emit("sentInvitations", invitations);
     }
   }
@@ -100,7 +108,7 @@ export class InvitationSocket {
       const socket = connectedUsers.get(userId);
       if (socket) {
         const invitations: Invitation[] =
-          this.invitationManager.getReceivedByUserId(invitedByUserId);
+          await this.invitationManager.getReceivedByUserId(invitedByUserId);
         socket.emit("receivedInvitations", invitations);
       }
     }
@@ -108,7 +116,7 @@ export class InvitationSocket {
     const socket = connectedUsers.get(invitedByUserId);
     if (socket) {
       const invitations: Invitation[] =
-        this.invitationManager.getSentByUserId(invitedByUserId);
+        await this.invitationManager.getSentByUserId(invitedByUserId);
       socket.emit("sentInvitations", invitations);
     }
   }

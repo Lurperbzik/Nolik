@@ -40,8 +40,10 @@ export class CollectionManager {
 
   public async delete({
     collection,
+    userId,
   }: {
     collection: Collection;
+    userId: number;
   }): Promise<Map<number, Collection[]>> {
     // Deletes a collection
     // Returns user collections that have been modified
@@ -50,9 +52,9 @@ export class CollectionManager {
       throw new HttpException("Collection not found", 404);
     }
     try {
-      await this.dao.delete(collection);
-
       const updatedCollections: Map<number, Collection[]> = new Map();
+
+      await this.dao.delete(collection, userId);
       // Find all users who have this collection in their cache
       this.collectionsCache.forEach((collections, key) => {
         if (

@@ -71,17 +71,34 @@ export class CollectionDao {
     }
   }
 
-  public async delete(collection: Collection): Promise<boolean> {
+  public async delete(
+    collection: Collection,
+    userId: number
+  ): Promise<boolean> {
     try {
-      const result = await pool.query(
-        `
+      if (collection.ownerId === userId) {
+        const result = await pool.query(
+          `
         DELETE FROM collections 
         WHERE url = $1 AND owner_id = $2
         `,
-        [collection.url, collection.ownerId]
-      );
-      if (result.rowCount === 0) {
-        return false;
+          [collection.url, collection.ownerId]
+        );
+        if (result.rowCount === 0) {
+          return false;
+        }
+      } else {
+        const result = await pool.query(
+          `
+          DELETE FROM collection_invites
+          WHERE collection_id = (SELECT id FROM collections WHERE url = $1 AND owner_id = $2)
+          AND invited_user_id = $3
+          `,
+          [collection.url, collection.ownerId, userId]
+        );
+        if (result.rowCount === 0) {
+          return false;
+        }
       }
     } catch (error: any) {
       if (error instanceof HttpException) {

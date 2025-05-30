@@ -102,6 +102,7 @@ export const deleteCollection = async (req: CustomRequest, res: any) => {
   try {
     const updatedCollections: Map<number, Collection[]> = await manager.delete({
       collection,
+      userId: parseInt(userId),
     });
     const allCollections = await manager.getAll();
     const exists = Array.from(allCollections.values()).some((collections) =>
