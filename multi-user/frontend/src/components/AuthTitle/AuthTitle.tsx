@@ -6,6 +6,8 @@ import {
   TextInput,
   Title,
   Alert,
+  Anchor,
+  Space,
 } from "@mantine/core";
 import classes from "./AuthTitle.module.css";
 
@@ -17,6 +19,7 @@ interface AuthTitleProps {
   onSubmit: () => void;
   isLoading: boolean;
   error: boolean;
+  onSubmitAdmin: () => void;
 }
 
 export function AuthTitle({
@@ -27,6 +30,7 @@ export function AuthTitle({
   onSubmit,
   isLoading,
   error,
+  onSubmitAdmin,
 }: AuthTitleProps) {
   return (
     <Container size={420} my={40}>
@@ -57,6 +61,8 @@ export function AuthTitle({
         <Button fullWidth mt="xl" onClick={onSubmit} loading={isLoading}>
           Sign in
         </Button>
+        <Space h="md" />
+        <Anchor onClick={onSubmitAdmin}>Log in to administration panel</Anchor>
         {error && (
           <Alert title="Error" color="red" mt="md">
             Invalid username or password

@@ -3,32 +3,37 @@ import { useState, useEffect } from "react";
 import { AuthTitle } from "./AuthTitle";
 import { useLogin } from "../../services/requests/login";
 import { useAuthContext } from "../../context/auth/AuthContext";
-
 export function AuthContainer() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login: setAuthenticated, isAuthenticated } = useAuthContext();
+  const [loginAsAdmin, setLoginAsAdmin] = useState(false);
 
+  const {
+    login: triggerContextLogin,
+    isAuthenticated,
+    role,
+  } = useAuthContext();
   const navigate = useNavigate();
+
   const { login, loading, error } = useLogin({
     username,
     password,
-    setLoginData: () => {},
+    setLoginData: triggerContextLogin,
   });
 
   const handleSubmit = async () => {
-    const success = await login();
-    if (success) {
-      setAuthenticated();
-    }
+    await login();
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isAuthenticated) return;
+
+    if (role === "admin" && loginAsAdmin) {
+      navigate("/admin");
+    } else {
       navigate("/");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]);
+  }, [isAuthenticated, role, navigate, loginAsAdmin]);
 
   return (
     <AuthTitle
@@ -36,9 +41,16 @@ export function AuthContainer() {
       setUsername={setUsername}
       password={password}
       setPassword={setPassword}
-      onSubmit={handleSubmit}
+      onSubmit={() => {
+        setLoginAsAdmin(false);
+        handleSubmit();
+      }}
       isLoading={loading}
       error={error}
+      onSubmitAdmin={() => {
+        setLoginAsAdmin(true);
+        handleSubmit();
+      }}
     />
   );
 }

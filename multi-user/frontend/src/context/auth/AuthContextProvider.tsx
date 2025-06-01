@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
-
-interface AuthContextProviderProps {
-  children: React.ReactNode;
-}
 
 export default function AuthContextProvider({
   children,
-}: AuthContextProviderProps) {
+}: {
+  children: ReactNode;
+}) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   const checkAuth = useCallback(async () => {
@@ -22,6 +21,7 @@ export default function AuthContextProvider({
         const data = await res.json();
         setUserId(data.user);
         setToken(data.token);
+        setRole(data.role);
       }
       setIsAuthenticated(res.ok);
     } catch {
@@ -43,20 +43,26 @@ export default function AuthContextProvider({
       credentials: "include",
     });
     setIsAuthenticated(false);
+    setUserId(null);
+    setRole(null);
+    setToken(null);
   }, []);
 
   const value = useMemo(
     () => ({
       isAuthenticated: !!isAuthenticated,
       userId,
+      role,
+      isAdmin: role === "admin",
+      token,
       login,
       logout,
-      token,
+      checkAuth,
     }),
-    [isAuthenticated, login, logout, userId, token]
+    [isAuthenticated, userId, role, token, login, logout, checkAuth]
   );
 
-  if (isAuthenticated === null) return;
+  if (isAuthenticated === null) return null;
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

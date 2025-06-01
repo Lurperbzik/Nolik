@@ -24,7 +24,7 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    if (!isAuthenticated || !token) return;
+    if (!isAuthenticated || !token || socketRef.current) return;
 
     const socket = io("http://localhost:3000", {
       auth: { token },
@@ -46,7 +46,10 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
     socket.on("connect_error", () => {});
 
     return () => {
-      socket.disconnect();
+      if (socket.connected) {
+        socket.disconnect();
+      }
+      socketRef.current = null;
     };
   }, [
     isAuthenticated,

@@ -9,8 +9,8 @@ export const useLogout = () => {
   });
 
   const logout = async () => {
-    const succes = await request();
-    return succes;
+    const success = await request();
+    return success;
   };
 
   return { loading, error, logout };

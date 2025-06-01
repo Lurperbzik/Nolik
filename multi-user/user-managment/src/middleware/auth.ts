@@ -21,6 +21,7 @@ export const authenticate = (
 
     const decoded: any = jwt.verify(token, secretKey);
     req.user = decoded.userId;
+    req.role = decoded.userRole;
     next();
   } catch (error) {
     res.status(400).json("Invalid token");
