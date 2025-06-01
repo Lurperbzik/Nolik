@@ -10,6 +10,4 @@ const PORT = process.env.PORT;
 const server = http.createServer(app);
 
 setupWebSocket(server);
-server.listen(PORT, () => {
-  console.log(`HTTP + WebSocket server running on port ${PORT}`);
-});
+server.listen(PORT, () => {});

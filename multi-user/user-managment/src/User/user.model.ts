@@ -4,6 +4,7 @@ interface UserInterface {
   role: string;
   username: string;
   password?: string;
+  apiKey?: string;
 }
 
 export class User {
@@ -12,6 +13,7 @@ export class User {
   public username: string;
   public role: string;
   public password?: string;
+  public apiKey?: string;
 
   constructor(data: UserInterface) {
     this.id = data.id;
@@ -19,6 +21,7 @@ export class User {
     this.username = data.username;
     this.role = data.role;
     this.password = data.password;
+    this.apiKey = data.apiKey;
   }
   static fromJson(json: UserInterface): User {
     return new User(json);

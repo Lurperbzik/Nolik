@@ -3,6 +3,7 @@ import { PiUserCirclePlus } from "react-icons/pi";
 import { NavBarItem } from "../Nav";
 import { Group, Text, ActionIcon } from "@mantine/core";
 import { MdDeleteForever } from "react-icons/md";
+import { useColors } from "../../../theme/theme.context";
 
 const NavInvitedCollectionData: {
   loading: boolean;
@@ -40,6 +41,7 @@ export function NavInvitedCollection({
   setActive,
   setDeleteModalOpened,
 }: NavInvitedCollectionProps) {
+  const { colors } = useColors();
   const leftIcons = invitations.map((inv) => {
     return <PiUserCirclePlus key={inv.invitedUserId} />;
   });
@@ -48,17 +50,17 @@ export function NavInvitedCollection({
     return (
       <Group key={inv.invitedUserId}>
         {inv.status === "pending" ? (
-          <Text size="sm" c="orange">
+          <Text size="sm" c={colors.pendingInvitation}>
             Pending
           </Text>
         ) : (
-          <Text size="sm" c="green">
+          <Text size="sm" c={colors.acceptedInvitation}>
             Accepted
           </Text>
         )}
         <ActionIcon
           variant="subtle"
-          color="red"
+          color={colors.iconDelete}
           size={22}
           onClick={() => {
             setActive(inv);

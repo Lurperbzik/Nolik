@@ -5,13 +5,14 @@ import { useCreateInvitation } from "../../../../services/requests/Invitation/cr
 import { User } from "../../../../models/User";
 import { Invitation, ShortInvitation } from "../../../../models/Invitation";
 import { Collection } from "../../../../models/Collection";
-import { useGetInvitationsByUser } from "../../../../services/requests/Invitation/getByUserId";
+import { useAuthContext } from "../../../../context/auth/AuthContext";
 
 interface ShareCollectionModalContainerProps {
   users: User[];
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
   activeCollection: Collection | undefined;
+  userInvitations: Invitation[];
 }
 
 export function ShareCollectionModalContainer({
@@ -19,11 +20,11 @@ export function ShareCollectionModalContainer({
   opened,
   setOpened,
   activeCollection,
+  userInvitations,
 }: ShareCollectionModalContainerProps) {
   const [activeInvitation, setActiveInvitation] = useState<
     ShortInvitation | undefined
   >(undefined);
-  const [userInvitations, setUserInvitations] = useState<Invitation[]>([]);
   const [userInvitationsFiltered, setUserInvitationsFiltered] = useState<
     Invitation[]
   >([]);
@@ -35,10 +36,7 @@ export function ShareCollectionModalContainer({
   const [activeUserNotInvited, setActiveUserNotInvited] = useState<
     User | undefined
   >(undefined);
-
-  const { getInvitationsByUser } = useGetInvitationsByUser({
-    setInvitations: setUserInvitations,
-  });
+  const { userId } = useAuthContext();
 
   useEffect(() => {
     const invitationsByCollection = userInvitations.filter(
@@ -59,19 +57,15 @@ export function ShareCollectionModalContainer({
   }, [userInvitations, activeCollection]);
 
   useEffect(() => {
-    getInvitationsByUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (activeUserNotInvited && activeCollection) {
       const newInvitation: ShortInvitation = {
         collectionUrl: activeCollection.url,
-        invitedUsername: activeUserNotInvited.id,
+        invitedUserId: activeUserNotInvited.id,
+        invitedByUserId: userId ? userId : -1,
       };
       setActiveInvitation(newInvitation);
     }
-  }, [activeCollection, activeUserNotInvited]);
+  }, [activeCollection, activeUserNotInvited, userId]);
 
   const { createInvitation } = useCreateInvitation({
     invitation: activeInvitation,

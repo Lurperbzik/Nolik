@@ -9,6 +9,7 @@ class CollectionSchema(BaseModel):
     owner: str
     url: str 
     platform: str
+    api_key: str
 
 class SearchSchema(BaseModel):
     collection_url: str

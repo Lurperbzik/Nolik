@@ -32,7 +32,6 @@ export const verifyRole =
   (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
       const token = req.cookies.jwt;
-      console.log("Token: ", token);
 
       if (!token) {
         return res.status(403).json("Acces denied");

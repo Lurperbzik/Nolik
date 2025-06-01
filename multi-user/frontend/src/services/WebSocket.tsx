@@ -9,7 +9,6 @@ interface WebSocketListenerProps {
   setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
   setSentInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
   setReceivedInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
-  setCollectionInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   children?: React.ReactNode;
 }
@@ -18,7 +17,6 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
   setCollections,
   setReceivedInvitations,
   setSentInvitations,
-  setCollectionInvitations,
   setUsers,
   children,
 }) => {
@@ -35,26 +33,19 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
 
     socketRef.current = socket;
 
-    socket.on("connect", () => {
-      console.log("✅ Socket conectado");
-    });
+    socket.on("connect", () => {});
 
     socket.on("collections", (payload: Collection[]) => {
-      console.log("Collections received:", payload);
       setCollections(payload);
     });
 
     socket.on("sentInvitations", setSentInvitations);
     socket.on("receivedInvitations", setReceivedInvitations);
     socket.on("users", setUsers);
-    socket.on("collection-invitations", setCollectionInvitations);
 
-    socket.on("connect_error", (err: Error) => {
-      console.error("Socket connection error:", err.message);
-    });
+    socket.on("connect_error", () => {});
 
     return () => {
-      console.log("⛔ Desmontando socket");
       socket.disconnect();
     };
   }, [
@@ -64,7 +55,6 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
     setReceivedInvitations,
     setSentInvitations,
     setUsers,
-    setCollectionInvitations,
   ]);
 
   return <>{children}</>;

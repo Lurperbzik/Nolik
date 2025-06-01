@@ -1,5 +1,6 @@
 import { CustomModal } from "../../Modal";
 import { Collection } from "../../../../models/Collection";
+import { useColors } from "../../../../theme/theme.context";
 
 const modalData: {
   modalTextField: keyof Collection;
@@ -8,7 +9,6 @@ const modalData: {
   textSecondary: string;
   button: boolean;
   buttonText: string;
-  colorButton: string;
 } = {
   modalTextField: "name",
   title: "Delete",
@@ -17,7 +17,6 @@ const modalData: {
     "By continuing, you will lose access to this collection. It will only be removed globally if you are the owner.",
   button: true,
   buttonText: "Delete",
-  colorButton: "#b5351c",
 };
 
 type DeleteCollectionModalProps = {
@@ -33,6 +32,7 @@ export function DeleteCollectionModal({
   onClickBottom,
   onClose,
 }: DeleteCollectionModalProps) {
+  const { colors } = useColors();
   if (!collection) {
     return null;
   }
@@ -48,7 +48,7 @@ export function DeleteCollectionModal({
       textSecondary={modalData.textSecondary}
       button={modalData.button}
       buttonText={modalData.buttonText}
-      colorButton={modalData.colorButton}
+      colorButton={colors.deleteCollectionButton}
       onClickBottom={onClickBottom}
     />
   );

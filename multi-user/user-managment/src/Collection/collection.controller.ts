@@ -2,6 +2,7 @@ import { HttpException } from "../model/exception";
 import { Collection } from "./collection.model";
 import { CustomRequest } from "../middleware/auth";
 import { CollectionManager } from "./collection.manager";
+import { UserManager } from "../User/user.manager";
 import { CollectionSocket } from "../Sockets/utils/collection.socket";
 import { InvitationSocket } from "../Sockets/utils/invitation.socket";
 import {
@@ -12,6 +13,7 @@ import { createCollectionService } from "../services/requests/createCollection";
 import { deleteCollectionService } from "../services/requests/deleteCollection";
 
 const manager = CollectionManager.getInstance();
+const userManager = UserManager.getInstance();
 const socket = new CollectionSocket();
 const invitationSocket = new InvitationSocket();
 
@@ -56,6 +58,8 @@ export const createCollection = async (req: CustomRequest, res: any) => {
     res.status(400).json("Incorrect values");
     return;
   }
+  const apiKey = await userManager.getApiKeyById(parseInt(userId));
+
   const collection: Collection = req.body;
   collection.ownerId = parseInt(userId);
   collection.status = "loading";
@@ -63,7 +67,7 @@ export const createCollection = async (req: CustomRequest, res: any) => {
     await manager.create(collection);
     await socket.onCreateCollection(userId);
     try {
-      await createCollectionService(collection);
+      await createCollectionService(collection, apiKey);
     } catch (err: any) {
       if (err instanceof HttpException) {
         res.status(err.statusCode).json({ error: err.message });

@@ -16,7 +16,6 @@ export const useGetCollections = ({ setCollections }: getCollectionsProps) => {
 
   const getCollections = async () => {
     const succes = await request();
-    console.log("Collections fetched:", succes);
     return succes;
   };
 

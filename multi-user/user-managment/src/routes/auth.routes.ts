@@ -11,7 +11,7 @@ router.get("/check-auth", authenticate, (req, res) => {
     .json({ authenticated: true, user: (req as any).user, token: token });
 });
 router.post("/logout", (req, res) => {
-  res.cookie("token", "", {
+  res.cookie("jwt", "", {
     maxAge: 0,
     httpOnly: true,
   });

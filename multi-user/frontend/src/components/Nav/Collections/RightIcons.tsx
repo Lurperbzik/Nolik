@@ -4,6 +4,7 @@ import { PiLinkBold } from "react-icons/pi";
 import { getGitHubURL } from "../../../utils/urlHelpers";
 import { Collection } from "../../../models/Collection";
 import { MdOutlineShare } from "react-icons/md";
+import { useColors } from "../../../theme/theme.context";
 
 type RightIconsProps = {
   collection: Collection;
@@ -16,20 +17,21 @@ export function RightIcons({
   setDeleteModalOpened,
   setShareModalOpened,
 }: RightIconsProps) {
+  const { colors } = useColors();
   return (
     <div style={{ display: "flex", gap: "4px" }}>
       <ActionIcon
         variant="subtle"
         size="md"
         onClick={() => setShareModalOpened(true)}
-        color="green"
+        color={colors.iconShare}
       >
         <MdOutlineShare />
       </ActionIcon>
       <ActionIcon
         variant="subtle"
         size="md"
-        color="red"
+        color={colors.iconDelete}
         onClick={() => setDeleteModalOpened(true)}
       >
         <MdDeleteForever />
@@ -37,6 +39,7 @@ export function RightIcons({
       <ActionIcon
         variant="subtle"
         size="md"
+        color={colors.iconLink}
         onClick={() => {
           const urlToOpen = getGitHubURL(collection.url, collection.platform);
           if (!urlToOpen) {

@@ -13,9 +13,7 @@ export function AuthContainer() {
   const { login, loading, error } = useLogin({
     username,
     password,
-    setLoginData: (data) => {
-      console.log("Login data:", data);
-    },
+    setLoginData: () => {},
   });
 
   const handleSubmit = async () => {

@@ -5,7 +5,6 @@ from fastapi import APIRouter, HTTPException
 from app.api.websocket.web_socket import send_message_wb
 from app.api.models.schemas import SearchSchema, CollectionUrlSchema, CollectionSchema, AdvancedSearchSchema
 from app.api.routers.github_router import check_repo_exists
-from app.api.config.load_env import GITHUB_TOKEN
 
 from app.modules.models.response_model import ClientException
 from app.modules.milvus.milvus_client import MilvusConn
@@ -118,7 +117,7 @@ async def create_collection(collection_scheme: CollectionSchema):
         collections = milvus_client.get_collections()
         await send_message_wb(collections)
 
-        extractor = ApiClient(collection_scheme.platform, GITHUB_TOKEN)
+        extractor = ApiClient(collection_scheme.platform, collection_scheme.api_key)
         
         collection = await extractor.fetch(collection_scheme.owner, collection_scheme.name)
         embedded_collection = await embedding_instance.from_collection(collection)

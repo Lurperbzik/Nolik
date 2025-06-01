@@ -1,5 +1,6 @@
 import { CustomModal } from "../Modal";
 import { Invitation } from "../../../models/Invitation";
+import { useColors } from "../../../theme/theme.context";
 
 const modalData: {
   modalTextField: keyof Invitation;
@@ -7,14 +8,12 @@ const modalData: {
   textSecondary: string;
   button: boolean;
   buttonText: string;
-  colorButton: string;
 } = {
   modalTextField: "nameCollection",
   title: "Delete Invitation for",
   textSecondary: "",
   button: true,
   buttonText: "Confirm",
-  colorButton: "#b5351c",
 };
 
 type DeleteInvitationModalProps = {
@@ -30,6 +29,7 @@ export function DeleteInvitationModal({
   onClickBottom,
   onClose,
 }: DeleteInvitationModalProps) {
+  const { colors } = useColors();
   if (!invitation) {
     return null;
   }
@@ -45,7 +45,7 @@ export function DeleteInvitationModal({
       textSecondary={modalData.textSecondary}
       button={modalData.button}
       buttonText={modalData.buttonText}
-      colorButton={modalData.colorButton}
+      colorButton={colors.deleteInvitationButton}
       onClickBottom={onClickBottom}
     />
   );

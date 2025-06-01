@@ -6,6 +6,7 @@ import {
   NativeSelect,
   TextInput,
 } from "@mantine/core";
+import { useColors } from "../../../theme/theme.context";
 
 export interface formProps {
   opened: boolean;
@@ -23,6 +24,7 @@ type ModalOptionsProps = {
   setForm: React.Dispatch<React.SetStateAction<formProps>>;
 };
 export function ModalOptions({ form, setForm }: ModalOptionsProps) {
+  const { colors } = useColors();
   return (
     <Modal
       opened={form.opened}
@@ -135,7 +137,7 @@ export function ModalOptions({ form, setForm }: ModalOptionsProps) {
         <Button
           onClick={() => setForm({ ...form, opened: false, checked: true })}
           variant="filled"
-          color="green"
+          color={colors.advancedSearchButton}
         >
           Confirm
         </Button>

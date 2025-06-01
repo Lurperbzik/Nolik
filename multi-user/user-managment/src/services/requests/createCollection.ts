@@ -1,15 +1,25 @@
 import { fetchData } from "../fetch";
 import { HttpException } from "../../model/exception";
-import { Collection } from "../../model/collection";
+
+interface Collection {
+  name: string;
+  owner: string;
+  platform: string;
+  url: string;
+  status: string;
+}
 
 export const createCollectionService = async (
-  collection: Collection
+  collection: Collection,
+  apiKey: string | null
 ): Promise<null> => {
   const url = "http://localhost:8000/api/collection";
   const method = "POST";
   try {
-    const body = JSON.stringify(collection);
-    console.log("Creating collection with body:", body);
+    const body = JSON.stringify({
+      ...collection,
+      api_key: apiKey,
+    });
     await fetchData({ url, method, body });
     return null;
   } catch (error) {

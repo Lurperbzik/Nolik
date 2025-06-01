@@ -8,7 +8,6 @@ COPY ./requirements.txt /code/requirements.txt
 RUN pip install -r requirements.txt
 
 COPY ./app/api /code/app/api 
-COPY ./.env /code/.env
 COPY ./app/modules /code/app/modules
 COPY ./app/models /code/app/models
 EXPOSE 8000 

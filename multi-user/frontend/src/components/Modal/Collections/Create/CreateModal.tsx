@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Form } from "../../../Form/Form";
 import { useForm } from "../../../Form/useForm";
 import { CustomAlert } from "../../../Alert/Alert";
+import { useColors } from "../../../../theme/theme.context";
 
 type ModalProps = {
   opened: boolean;
@@ -25,6 +26,7 @@ export function AddModal({
   error,
   loading,
 }: ModalProps) {
+  const { colors } = useColors();
   const [validInput, setValidInput] = useState(false);
   const {
     values: { valueOwner, valueName },
@@ -61,7 +63,7 @@ export function AddModal({
           size="xl"
           style={{
             marginTop: "2px",
-            color: "#333",
+            color: colors.modalTitle,
           }}
         >
           Add Collection
@@ -72,11 +74,11 @@ export function AddModal({
       transitionProps={{ transition: "fade", duration: 100 }}
       styles={{
         content: {
-          backgroundColor: "#f9f9f9",
+          backgroundColor: colors.backgroundPrimary,
         },
         header: {
-          backgroundColor: "#f9f9f9",
-          borderBottom: "1px solid #e0e0e0",
+          backgroundColor: colors.backgroundPrimary,
+          borderBottom: "1px solid " + colors.separator,
         },
       }}
     >
@@ -88,12 +90,20 @@ export function AddModal({
           left: "-16px",
           width: "calc(100% + 32px)",
           border: "none",
-          borderTop: "1px solid #e0e0e0",
+          borderTop: "1px solid " + colors.separator,
         }}
       ></hr>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button color="#347D39" loading={loading} onClick={handleSubmitButton}>
-          <Text fw={600} size="md" style={{ marginTop: "2px", color: "#FFFF" }}>
+        <Button
+          color={colors.addCollectionButton}
+          loading={loading}
+          onClick={handleSubmitButton}
+        >
+          <Text
+            fw={600}
+            size="md"
+            style={{ marginTop: "2px", color: colors.addCollectionButtonText }}
+          >
             Submit
           </Text>
         </Button>
@@ -107,7 +117,7 @@ export function AddModal({
             "Collection varified successfully! It may take a few minutes to load.\nYou can close this modal now."
           }
           messageError={
-            "Owner or collection not found, please try again.\nIf the collection is private, make sure you have the necessary permissions."
+            "Owner or collection not found, please try again.\nIf the collection is private, make sure you have the necessary permissions.\nAlso, make sure you're not trying to add a collection you already have access to."
           }
         />
       )}

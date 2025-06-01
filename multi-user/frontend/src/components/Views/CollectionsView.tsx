@@ -4,6 +4,7 @@ import { DeleteCollectionModalContainer } from "../Modal/Collections/Delete/Dele
 import { Collection } from "../../models/Collection";
 import { User } from "../../models/User";
 import { ShareCollectionModalContainer } from "../Modal/Collections/Share/ShareModalContainer";
+import { Invitation } from "../../models/Invitation";
 
 interface CollectionsViewProps {
   collections: Collection[];
@@ -12,12 +13,14 @@ interface CollectionsViewProps {
   setActiveCollection: React.Dispatch<
     React.SetStateAction<Collection | undefined>
   >;
+  userInvitations: Invitation[];
 }
 export function CollectionsView({
   collections,
   users,
   activeCollection,
   setActiveCollection,
+  userInvitations,
 }: CollectionsViewProps) {
   const [addModalOpened, setAddModalOpened] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
@@ -41,6 +44,7 @@ export function CollectionsView({
       />
       <ShareCollectionModalContainer
         activeCollection={activeCollection}
+        userInvitations={userInvitations}
         users={users}
         setOpened={setShareModalOpened}
         opened={shareModalOpened}

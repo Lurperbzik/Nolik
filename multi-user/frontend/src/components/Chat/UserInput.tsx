@@ -1,10 +1,12 @@
 import { Text, Card } from "@mantine/core";
+import { useColors } from "../../theme/theme.context";
 
 type UserInputProps = {
   message: string;
 };
 
 export function UserInput({ message }: UserInputProps) {
+  const { colors } = useColors();
   message = message.trim();
   if (message === "") {
     return null;
@@ -16,7 +18,7 @@ export function UserInput({ message }: UserInputProps) {
         withBorder
         radius="lg"
         style={{
-          backgroundColor: "#dddddd",
+          backgroundColor: colors.userMessage,
           maxWidth: "800px",
           width: "100%",
         }}

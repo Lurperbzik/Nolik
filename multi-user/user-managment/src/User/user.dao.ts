@@ -66,7 +66,7 @@ export class UserDao {
     });
   }
 
-  public async update(user: User): Promise<String> {
+  public async updatePassword(user: User): Promise<String> {
     if (!user.id || !user.password) {
       throw new HttpException("User ID and password are required", 400);
     }
@@ -76,10 +76,10 @@ export class UserDao {
     return new Promise((resolve, reject) => {
       const query = `
       UPDATE USERS 
-      SET password = $1, role = $2 
-      WHERE id = $3
+      SET password = $1
+      WHERE id = $2
       `;
-      const values = [hashedPassword, user.role, user.id];
+      const values = [hashedPassword, user.id];
 
       pool.query(query, values, (err, res) => {
         if (err) {
@@ -95,6 +95,31 @@ export class UserDao {
           resolve(`User ${user.username} updated successfully`);
         }
       });
+    });
+  }
+
+  public async updateApiKey(user: User): Promise<String> {
+    if (!user.id || !user.apiKey) {
+      throw new HttpException("User ID and API key are required", 400);
+    }
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `
+        UPDATE users
+        SET api_key = $1
+        WHERE id = $2
+        `,
+        [user.apiKey, user.id],
+        (err, res) => {
+          if (err) {
+            reject(new HttpException(err.message, 500));
+          } else if (res.rowCount === 0) {
+            reject(new HttpException(`No user found with ID: ${user.id}`, 404));
+          } else {
+            resolve(`User ${user.username} API key updated successfully`);
+          }
+        }
+      );
     });
   }
 
@@ -119,6 +144,28 @@ export class UserDao {
               username: row.username,
             }));
             resolve(users);
+          }
+        }
+      );
+    });
+  }
+
+  public async getApiKeyById(id: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `
+        SELECT api_key 
+        FROM users 
+        WHERE id = $1
+        `,
+        [id],
+        (err, res) => {
+          if (err) {
+            reject(new HttpException(err.message, 500));
+          } else if (res.rows.length === 0) {
+            reject(new HttpException("User not found", 404));
+          } else {
+            resolve(res.rows[0].api_key);
           }
         }
       );

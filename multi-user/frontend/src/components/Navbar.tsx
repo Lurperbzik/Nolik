@@ -6,7 +6,8 @@ import { NavUsers } from "./Nav/Users/NavUsers";
 import { InvitationsView } from "./Views/InvitationsView";
 import { useGetCollections } from "../services/requests/Collection/get";
 import { useGetUsers } from "../services/requests/User/get";
-import { useGetInvitations } from "../services/requests/Invitation/get";
+import { useGetSentInvitations } from "../services/requests/Invitation/getSent";
+import { useGetReceivedInvitations } from "../services/requests/Invitation/getReceived";
 import { Collection } from "../models/Collection";
 import { User } from "../models/User";
 import { Invitation } from "../models/Invitation";
@@ -27,10 +28,10 @@ export function Navbar({ activeCollection, setActiveCollection }: NavbarProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredInvitedUsers, setFilteredInvitedUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [collectionInvitations, setCollectionInvitations] = useState<
-    Invitation[]
-  >([]);
+  const [receivedInvitations, setReceivedInvitations] = useState<Invitation[]>(
+    []
+  );
+  const [sentInvitations, setSentInvitations] = useState<Invitation[]>([]);
 
   const { getCollections } = useGetCollections({
     setCollections,
@@ -40,8 +41,12 @@ export function Navbar({ activeCollection, setActiveCollection }: NavbarProps) {
     setUsers,
   });
 
-  const { getInvitations } = useGetInvitations({
-    setInvitations,
+  const { getReceivedInvitations } = useGetReceivedInvitations({
+    setReceivedInvitations,
+  });
+
+  const { getSentInvitations } = useGetSentInvitations({
+    setSentInvitations,
   });
 
   useEffect(() => {
@@ -50,25 +55,26 @@ export function Navbar({ activeCollection, setActiveCollection }: NavbarProps) {
   }, [users, userId]);
 
   useEffect(() => {
-    const invitedUserIds = invitations.map((inv) => inv.invitedUserId);
+    const invitedUserIds = sentInvitations.map((inv) => inv.invitedUserId);
     const filtered = users.filter(
       (user) => user.id !== userId && !invitedUserIds.includes(user.id)
     );
     setFilteredInvitedUsers(filtered);
-  }, [invitations, userId, users]);
+  }, [sentInvitations, userId, users]);
 
   useEffect(() => {
     getCollections();
     getUsers();
-    getInvitations();
+    getReceivedInvitations();
+    getSentInvitations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <WebSocketListener
       setCollections={setCollections}
-      setInvitations={setInvitations}
-      setCollectionInvitations={setCollectionInvitations}
+      setSentInvitations={setSentInvitations}
+      setReceivedInvitations={setReceivedInvitations}
       setUsers={setUsers}
     >
       <CollectionsView
@@ -76,11 +82,12 @@ export function Navbar({ activeCollection, setActiveCollection }: NavbarProps) {
         users={filteredInvitedUsers}
         activeCollection={activeCollection}
         setActiveCollection={setActiveCollection}
+        userInvitations={sentInvitations}
       />
       <Space h="md" />
       <NavUsers users={filteredUsers} />
       <Space h="md" />
-      <InvitationsView invitations={invitations} />
+      <InvitationsView invitations={receivedInvitations} />
     </WebSocketListener>
   );
 }

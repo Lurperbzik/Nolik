@@ -10,6 +10,7 @@ import {
 import { MdErrorOutline } from "react-icons/md";
 import React from "react";
 import { IconType } from "react-icons";
+import { useColors } from "../../theme/theme.context";
 
 type HeaderProps = {
   title: string;
@@ -18,6 +19,7 @@ type HeaderProps = {
 };
 
 export function Header({ title, Icon, rightElement }: HeaderProps) {
+  const { colors } = useColors();
   return (
     <div
       style={{
@@ -25,13 +27,17 @@ export function Header({ title, Icon, rightElement }: HeaderProps) {
         alignItems: "center",
         justifyContent: "space-between",
         padding: "12px 16px",
-        borderBottom: "1px solid #e0e0e0",
-        backgroundColor: "#f9f9f9",
+        borderBottom: "1px solid " + colors.separator,
+        backgroundColor: colors.backgroundPrimary,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <Icon size="22px" color="#555" />
-        <Text fw={600} size="lg" style={{ marginTop: "2px", color: "#333" }}>
+        <Icon size="22px" color={colors.secondaryText} />
+        <Text
+          fw={600}
+          size="lg"
+          style={{ marginTop: "2px", color: colors.modalTitle }}
+        >
           {title}
         </Text>
       </div>
@@ -71,10 +77,15 @@ export function NavBarItem<T>({
   setActive,
   active,
 }: NavBarItemProps<T>) {
+  const { colors } = useColors();
   if (error) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <Alert title="Error" icon={<MdErrorOutline size={"xl"} />} color="red">
+        <Alert
+          title="Error"
+          icon={<MdErrorOutline size={"xl"} />}
+          color={colors.alertError}
+        >
           Failed to load data, please try again later.
         </Alert>
       </div>
@@ -123,7 +134,7 @@ export function NavBarItem<T>({
               label={String(item[navlinkValueField])}
               active={false}
               leftSection={leftElement[index]}
-              rightSection={<Loader color="blue" size="sm" />}
+              rightSection={<Loader color={colors.loader} size="sm" />}
             />
           ) : (
             <NavLink
@@ -138,7 +149,9 @@ export function NavBarItem<T>({
             />
           )
         )}
-        <hr style={{ border: "none", borderTop: "1px solid #e0e0e0" }} />
+        <hr
+          style={{ border: "none", borderTop: "1px solid " + colors.separator }}
+        />
       </Box>
     </div>
   );

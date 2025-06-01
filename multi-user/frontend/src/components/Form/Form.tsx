@@ -1,5 +1,5 @@
 import { TextInput, Fieldset, Stack } from "@mantine/core";
-import classes from "./Form.module.css";
+import { useColors } from "../../theme/theme.context";
 
 type Props = {
   errors: { errorOwner: string; errorName: string };
@@ -12,11 +12,28 @@ type Props = {
 };
 
 export function Form({ errors, handlers }: Props) {
+  const { colors } = useColors();
   const { errorOwner, errorName } = errors;
   const { setValueOwner, setValueName, setErrorOwner, setErrorName } = handlers;
 
   return (
-    <Fieldset legend="📦 Collection" className={classes.fieldset} radius="xs">
+    <Fieldset
+      legend="📦 Collection"
+      radius="xs"
+      style={{
+        border: "1px solid " + colors.line,
+        padding: 20,
+        borderRadius: 12,
+        marginBottom: 16,
+      }}
+      styles={{
+        legend: {
+          fontWeight: 600,
+          fontSize: 18,
+          color: colors.titleText,
+        },
+      }}
+    >
       <Stack>
         <TextInput
           placeholder="Owner name"

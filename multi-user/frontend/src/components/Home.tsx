@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { AppShell, Burger, Group } from "@mantine/core";
+import { AppShell, Burger, Group, Space } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { Navbar } from "./Navbar";
 import { ChatContainer } from "./Chat/ChatContainer";
 import { Collection } from "../models/Collection";
+import { NavProfile } from "./Nav/Profile/NavProfile";
+import { useColors } from "../theme/theme.context";
 
 export function Home() {
+  const { colors } = useColors();
   const [opened, setOpened] = useState(false);
   const [activeCollection, setActiveCollection] = useState<
     Collection | undefined
@@ -25,7 +28,7 @@ export function Home() {
       padding="md"
     >
       {isMobile && (
-        <AppShell.Header style={{ backgroundColor: "#f9f9f9" }}>
+        <AppShell.Header style={{ backgroundColor: colors.backgroundPrimary }}>
           <Group h="100%" px="md">
             <Burger
               opened={opened}
@@ -38,9 +41,11 @@ export function Home() {
       )}
       <AppShell.Navbar
         style={{
-          backgroundColor: "#f9f9f9",
+          backgroundColor: colors.backgroundPrimary,
           overflow: "auto",
           scrollbarWidth: "thin",
+          display: "flex",
+          flexDirection: "column",
         }}
         p="md"
       >
@@ -48,9 +53,17 @@ export function Home() {
           activeCollection={activeCollection}
           setActiveCollection={setActiveCollection}
         />
+        <Space h="xl" />
+
+        <NavProfile />
       </AppShell.Navbar>
       <AppShell.Main
-        style={{ height: "100%", overflow: "auto", scrollbarWidth: "thin" }}
+        style={{
+          height: "100%",
+          overflow: "auto",
+          scrollbarWidth: "thin",
+          backgroundColor: colors.backgroundSecondary,
+        }}
       >
         <ChatContainer
           collectionUrl={activeCollection ? activeCollection.url : ""}

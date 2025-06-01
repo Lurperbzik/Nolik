@@ -10,7 +10,6 @@ export const deleteCollectionService = async (
     const body = JSON.stringify({
       url: collection_url,
     });
-    console.log("Creating collection with body:", body);
     await fetchData({ url, method, body });
     return null;
   } catch (error) {

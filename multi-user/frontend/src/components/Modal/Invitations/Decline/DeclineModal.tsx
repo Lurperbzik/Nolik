@@ -1,5 +1,6 @@
 import { CustomModal } from "../../Modal";
 import { Invitation } from "../../../../models/Invitation";
+import { useColors } from "../../../../theme/theme.context";
 
 const modalData: {
   modalTextField: keyof Invitation;
@@ -8,7 +9,6 @@ const modalData: {
   textSecondary: string;
   button: boolean;
   buttonText: string;
-  colorButton: string;
 } = {
   modalTextField: "nameCollection",
   title: "Decline Invitation for",
@@ -16,7 +16,6 @@ const modalData: {
   textSecondary: "",
   button: true,
   buttonText: "Confirm",
-  colorButton: "#b5351c",
 };
 
 type DeclineInvitationModalProps = {
@@ -32,6 +31,7 @@ export function DeclineInvitationModal({
   onClickBottom,
   onClose,
 }: DeclineInvitationModalProps) {
+  const { colors } = useColors();
   if (!invitation) {
     return null;
   }
@@ -47,7 +47,7 @@ export function DeclineInvitationModal({
       textSecondary={modalData.textSecondary}
       button={modalData.button}
       buttonText={modalData.buttonText}
-      colorButton={modalData.colorButton}
+      colorButton={colors.declineInvitationButton}
       onClickBottom={onClickBottom}
     />
   );

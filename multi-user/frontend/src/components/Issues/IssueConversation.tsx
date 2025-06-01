@@ -3,11 +3,14 @@ import { Issue } from "../../models/Issue";
 import { Header } from "./Header";
 import { Comment } from "./Comment";
 import "./Issues.module.css";
+import { useColors } from "../../theme/theme.context";
+
 interface IssueConversationProps {
   issue: Issue;
 }
 
 export function IssueConversation({ issue }: IssueConversationProps) {
+  const { colors } = useColors();
   const comments = issue.comments.map((comment, index) => (
     <Comment
       key={index}
@@ -24,7 +27,7 @@ export function IssueConversation({ issue }: IssueConversationProps) {
         style={{
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#f9f9f9",
+          backgroundColor: colors.backgroundPrimary,
           gap: "10px",
         }}
         radius={0}

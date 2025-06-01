@@ -2,6 +2,7 @@ import { CustomModal } from "../Modal";
 //import { ShortInvitation } from "../../../models/Invitation";
 import { Collection } from "../../../models/Collection";
 import { User } from "../../../models/User";
+import { useColors } from "../../../theme/theme.context";
 
 const modalData: {
   modalTextField: keyof Collection;
@@ -9,14 +10,12 @@ const modalData: {
   textSecondary: string;
   button: boolean;
   buttonText: string;
-  colorButton: string;
 } = {
   modalTextField: "name",
   title: "Send Invitation to ",
   textSecondary: "",
   button: true,
   buttonText: "Confirm",
-  colorButton: "green",
 };
 
 type CreateInvitationModalProps = {
@@ -34,12 +33,11 @@ export function CreateInvitationModal({
   onClickBottom,
   onClose,
 }: CreateInvitationModalProps) {
+  const { colors } = useColors();
   if (!user) {
-    console.log("User  is undefined");
     return null;
   }
   if (!collection) {
-    console.log("Collection is undefined");
     return null;
   }
   return (
@@ -54,7 +52,7 @@ export function CreateInvitationModal({
       textSecondary={modalData.textSecondary}
       button={modalData.button}
       buttonText={modalData.buttonText}
-      colorButton={modalData.colorButton}
+      colorButton={colors.createInvitationButton}
       onClickBottom={onClickBottom}
     />
   );

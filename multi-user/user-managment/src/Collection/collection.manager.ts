@@ -55,20 +55,35 @@ export class CollectionManager {
       const updatedCollections: Map<number, Collection[]> = new Map();
 
       await this.dao.delete(collection, userId);
-      // Find all users who have this collection in their cache
-      this.collectionsCache.forEach((collections, key) => {
-        if (
-          collections.some(
-            (c) => c.url === collection.url && c.owner == collection.owner
-          )
-        ) {
+
+      if (userId === collection.ownerId) {
+        this.collectionsCache.forEach((collections, key) => {
+          if (
+            collections.some(
+              (c) => c.url === collection.url && c.owner == collection.owner
+            )
+          ) {
+            this.collectionsCache.set(
+              key,
+              collections.filter((c) => c.url !== collection.url)
+            );
+            updatedCollections.set(key, this.collectionsCache.get(key) || []);
+          }
+        });
+      } else {
+        if (this.collectionsCache.has(userId)) {
           this.collectionsCache.set(
-            key,
-            collections.filter((c) => c.url !== collection.url)
+            userId,
+            this.collectionsCache
+              .get(userId)
+              ?.filter((c) => c.url !== collection.url) || []
           );
-          updatedCollections.set(key, this.collectionsCache.get(key) || []);
+          updatedCollections.set(
+            userId,
+            this.collectionsCache.get(userId) || []
+          );
         }
-      });
+      }
 
       return updatedCollections;
     } catch (error: any) {

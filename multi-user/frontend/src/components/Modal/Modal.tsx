@@ -1,4 +1,5 @@
 import { Button, Modal, Text, Space } from "@mantine/core";
+import { useColors } from "../../theme/theme.context";
 
 type CustomModalProps<T> = {
   data: T;
@@ -31,6 +32,7 @@ export function CustomModal<T>({
   onClickBottom,
   endContent,
 }: CustomModalProps<T>) {
+  const { colors } = useColors();
   return (
     <Modal
       opened={opened}
@@ -40,9 +42,14 @@ export function CustomModal<T>({
       }}
       title={
         <>
-          <Text size="lg" fw="800" style={{ color: "#333" }}>
+          <Text size="lg" fw="800" style={{ color: colors.modalTitle }}>
             {title}{" "}
-            <Text size="lg" component="span" c="blue" fw="800">
+            <Text
+              size="lg"
+              component="span"
+              c={colors.modalHighlightText}
+              fw="800"
+            >
               {String(data[modalTextField])}
             </Text>
           </Text>
@@ -50,11 +57,11 @@ export function CustomModal<T>({
       }
       styles={{
         content: {
-          backgroundColor: "#f9f9f9",
+          backgroundColor: colors.backgroundPrimary,
         },
         header: {
-          backgroundColor: "#f9f9f9",
-          borderBottom: "1px solid #e0e0e0",
+          backgroundColor: colors.backgroundPrimary,
+          borderBottom: "1px solid " + colors.separator,
         },
       }}
     >
@@ -67,7 +74,7 @@ export function CustomModal<T>({
             style={{
               wordBreak: "break-word",
               overflowWrap: "break-word",
-              color: "#333",
+              color: colors.modalTitle,
             }}
             size="md"
             fw="600"
@@ -85,7 +92,7 @@ export function CustomModal<T>({
           left: "-16px",
           width: "calc(100% + 32px)",
           border: "none",
-          borderTop: "1px solid #e0e0e0",
+          borderTop: "1px solid " + colors.separator,
         }}
       ></hr>
       {button && (

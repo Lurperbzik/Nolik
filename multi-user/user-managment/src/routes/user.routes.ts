@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { verifyRole, authenticate } from "../middleware/auth";
-import * as userController from "../controller/user.controller";
+import * as userController from "../User/user.controller";
 
 const router = Router();
 
-router.post("/signup", userController.signup);
+router.post("/signup", userController.createUser);
 
 router.get("/", authenticate, userController.getUsers);
 
@@ -14,5 +14,6 @@ router.delete(
   userController.deleteUser
 );
 
-router.patch("/updateUser", verifyRole("admin"), userController.updateUser);
+router.put("/password", authenticate, userController.updateUserPassword);
+router.put("/api-key", authenticate, userController.updateUserApiKey);
 export default router;

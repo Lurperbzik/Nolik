@@ -14,6 +14,7 @@ import { Issues } from "../Issues/Issues";
 import { UserInput } from "./UserInput";
 import { IssueJSON } from "../../models/Issue";
 import { ModalOptions, formProps } from "../Modal/SearchOptions/ModalOptions";
+import { useColors } from "../../theme/theme.context";
 
 interface ChatProps {
   collectionUrl: string;
@@ -34,6 +35,7 @@ export function Chat({
   text,
   setText,
 }: ChatProps) {
+  const { colors } = useColors();
   const [messages, setMessages] = useState<React.ReactNode>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [input, setInput] = useState<React.ReactNode>(null);
@@ -44,12 +46,10 @@ export function Chat({
       setText((prevText: string) => prevText + "\n");
     } else if (event.key === "Enter") {
       event.preventDefault();
-
-      const newMessage = UserInput({ message: text });
-      if (!newMessage) {
+      if (text.trim() === "") {
         return;
       }
-      setInput(newMessage);
+      setInput(<UserInput message={text} />);
       setRequest(true);
     }
   };
@@ -101,7 +101,9 @@ export function Chat({
       </div>
       <Card
         style={{
-          backgroundColor: !collectionUrl ? "#f1f3f5" : "#ffffff",
+          backgroundColor: !collectionUrl
+            ? colors.textareaDisabled
+            : colors.textarea,
           width: "90%",
           maxWidth: "800px",
           margin: "0 auto 20px auto",
@@ -136,13 +138,13 @@ export function Chat({
           <div style={{ display: "flex", gap: "20px" }}>
             <Tooltip
               label="Edit advanced search options"
-              color="gray"
+              color={colors.tooltip}
               position="top-start"
               opacity={0.8}
             >
               <ActionIcon
                 variant="light"
-                color="gray"
+                color={colors.tooltip}
                 onClick={() => setForm({ ...form, opened: true })}
               >
                 <MdOutlineEditNote size="24" />
@@ -152,12 +154,12 @@ export function Chat({
               label="Apply advanced search options"
               refProp="ref"
               position="top-start"
-              color="gray"
+              color={colors.tooltip}
               opacity={0.8}
             >
               <div>
                 <Switch
-                  color="#347D39"
+                  color={colors.switch}
                   checked={form.checked}
                   style={{ marginTop: "5px" }}
                   onChange={() => setForm({ ...form, checked: !form.checked })}
@@ -167,7 +169,7 @@ export function Chat({
           </div>
           <Tooltip
             label="Send message"
-            color="gray"
+            color={colors.tooltip}
             position="top-start"
             opacity={0.8}
           >
@@ -176,13 +178,12 @@ export function Chat({
               disabled={!collectionUrl || text.length === 0}
               size="lg"
               variant="filled"
-              color="gray"
+              color={colors.tooltip}
               onClick={() => {
-                const newMessage = UserInput({ message: text });
-                if (!newMessage) {
+                if (text.trim() === "") {
                   return;
                 }
-                setMessages(newMessage);
+                setMessages(<UserInput message={text} />);
                 setRequest(true);
               }}
             >

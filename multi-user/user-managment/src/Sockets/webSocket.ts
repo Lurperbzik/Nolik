@@ -41,7 +41,6 @@ export function setupWebSocket(server: http.Server) {
   });
 
   io.on("connection", (socket) => {
-    console.log(`🟢 Usuario conectado: ${socket.data.userId}`);
     connectedUsers.set(socket.data.userId, socket);
     collectionManager.getByUserIdFromDB({
       userId: parseInt(socket.data.userId),
@@ -50,7 +49,6 @@ export function setupWebSocket(server: http.Server) {
     invitationManager.getByUserIdFromDB(parseInt(socket.data.userId));
 
     socket.on("disconnect", () => {
-      console.log(`🔴 Usuario desconectado: ${socket.data.userId}`);
       connectedUsers.delete(socket.data.userId);
       collectionManager.removeFromCacheByUserId({
         userId: parseInt(socket.data.userId),

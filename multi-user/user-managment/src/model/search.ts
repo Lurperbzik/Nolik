@@ -1,4 +1,4 @@
-import { Model as CollectionModel } from "./collection";
+import { CollectionManager } from "../Collection/collection.manager";
 import { HttpException } from "./exception";
 export interface IssueRequest {
   collection_url: string;
@@ -26,8 +26,10 @@ export class Model {
     if (!data) {
       throw new Error("Invalid request");
     }
-    const collectionModel = new CollectionModel();
-    const collections = await collectionModel.getCollections(userId);
+    const collectionModel = CollectionManager.getInstance();
+    const collections = await collectionModel.getByUserId({
+      userId: Number(userId),
+    });
     const collection = collections.find(
       (collection) => collection.url === data.collection_url
     );

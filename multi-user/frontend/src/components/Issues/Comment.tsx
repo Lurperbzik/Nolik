@@ -1,5 +1,6 @@
 import { Blockquote } from "@mantine/core";
 import { MarkdownLiteRenderer } from "../../utils/MarkdownLiteRenderer";
+import { useColors } from "../../theme/theme.context";
 
 interface CommentProps {
   description: string;
@@ -8,7 +9,8 @@ interface CommentProps {
 }
 
 export function Comment({ description, author, issueAuthor }: CommentProps) {
-  const color = author === issueAuthor ? "orange" : "blue";
+  const { colors } = useColors();
+  const color = author === issueAuthor ? colors.commentAuthor : colors.comment;
   return (
     <Blockquote color={color} cite={author}>
       <MarkdownLiteRenderer text={description} />
