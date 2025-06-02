@@ -8,7 +8,7 @@ services:
       - ETCD_QUOTA_BACKEND_BYTES=4294967296
       - ETCD_SNAPSHOT_COUNT=50000
     volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/etcd:/etcd
+      - ./core/volumes/etcd:/etcd
     command: etcd -advertise-client-urls=http://0.0.0.0:2379 -listen-client-urls=http://0.0.0.0:2379 --data-dir=/etcd
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
@@ -25,7 +25,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
+      - ./core/volumes/minio:/minio_data
     command: minio server /minio_data --console-address ":9001"
     ports:
       - "9000:9000"
@@ -47,7 +47,7 @@ services:
       MINIO_ADDRESS: minio:9000
       MILVUS_LOG_LEVEL: info
     volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
+      - ./core/volumes/milvus:/var/lib/milvus
       - ./core/milvus.yaml:/milvus/configs/milvus.yaml
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
@@ -72,9 +72,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    volumes:
-      - ./app/api:/code/app/api
-      - ./app/modules:/code/app/modules
     depends_on:
       milvus-standalone:
         condition: service_healthy
@@ -94,9 +91,6 @@ services:
       - ./user-management/.env
     ports:
       - "3000:3000"
-    volumes:
-      - ./user-management:/app
-    command: node build/index.js
     networks:
       - milvus-network
 
@@ -122,9 +116,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    volumes:
-      - /app/node_modules
-    command: npm run dev -- --host
     restart: unless-stopped
     networks:
       - milvus-network

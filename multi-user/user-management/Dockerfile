@@ -1,16 +1,16 @@
-# Etapa 1: Compilación
 FROM node:24-slim AS build
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY package*.json tsconfig.json ./
+RUN npm ci
 
 COPY . .
 
-RUN npm run tsc
+RUN npx tsc -p tsconfig.json
 
-FROM node:24-slim
+
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -18,8 +18,7 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/build ./build
 COPY --from=build /app/.env ./
 
-
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 ENV NODE_ENV=production
 

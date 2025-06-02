@@ -1,7 +1,6 @@
 import { Alert, Space } from "@mantine/core";
 import { GiInfo } from "react-icons/gi";
 import { useColors } from "../../theme/theme.context";
-import { useMantineTheme } from "@mantine/core";
 
 type AlertProps = {
   error: boolean;
@@ -17,11 +16,6 @@ export function CustomAlert({
   messageError,
 }: AlertProps) {
   const { colors } = useColors();
-  const theme = useMantineTheme();
-  console.log("CustomAlert rendered");
-  console.log("orange", theme.colors.orange[6]);
-
-  console.log("blue", theme.colors.blue[6]);
   return (
     <>
       {error && (

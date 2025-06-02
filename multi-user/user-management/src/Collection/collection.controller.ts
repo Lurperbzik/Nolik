@@ -59,7 +59,10 @@ export const createCollection = async (req: CustomRequest, res: any) => {
     return;
   }
   const apiKey = await userManager.getApiKeyById(parseInt(userId));
-
+  if (!apiKey) {
+    res.status(400).json("Api key not found");
+    return;
+  }
   const collection: Collection = req.body;
   collection.ownerId = parseInt(userId);
   collection.status = "loading";
@@ -117,9 +120,9 @@ export const deleteCollection = async (req: CustomRequest, res: any) => {
       collection,
       userId: parseInt(userId),
     });
-    const exists = manager.getByUrlFromDB({ url: collection.url });
+    const exists = await manager.getByUrlFromDB({ url: collection.url });
 
-    if (!exists) {
+    if (!exists || exists.length === 0) {
       await deleteCollectionService(collection.url);
     }
     await socket.onDeleteCollection(updatedCollections);

@@ -6,7 +6,6 @@ interface Collection {
   owner: string;
   platform: string;
   url: string;
-  status: string;
 }
 
 export const createCollectionService = async (
@@ -17,7 +16,10 @@ export const createCollectionService = async (
   const method = "POST";
   try {
     const body = JSON.stringify({
-      ...collection,
+      name: collection.name,
+      owner: collection.owner,
+      url: collection.url,
+      platform: collection.platform,
       api_key: apiKey,
     });
     await fetchData({ path, method, body });

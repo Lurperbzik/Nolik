@@ -65,3 +65,9 @@ CREATE TRIGGER before_invite_insert
 BEFORE INSERT ON collection_invites
 FOR EACH ROW
 EXECUTE FUNCTION check_owner_before_invite();
+
+-- Consulta para insertar un usuario administrador por defecto
+-- username: admin
+-- password: admin_password
+INSERT INTO users (username, password, role)
+VALUES ('admin', '$2b$10$KrkUgF11XXWnGZeLwkZoXOSeFAxNHAJcJWuz2wZuzeSeMA9IDBRh6', 'admin');

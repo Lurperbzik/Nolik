@@ -111,7 +111,7 @@ async def create_collection(collection_scheme: CollectionSchema):
    
 
     try:
-        await check_repo_exists(collection_scheme.owner, collection_scheme.name)
+        await check_repo_exists(collection_scheme.owner, collection_scheme.name, collection_scheme.api_key)
         milvus_client = MilvusConn()
         milvus_client.create_collection(collection_scheme)
         collections = milvus_client.get_collections()

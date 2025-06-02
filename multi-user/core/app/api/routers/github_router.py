@@ -1,7 +1,5 @@
 from fastapi import APIRouter, HTTPException
 
-from app.api.config.load_env import GITHUB_TOKEN
-
 from app.modules.api_clients.adapter import ApiClient
 from app.modules.milvus.milvus_client import MilvusConn
 from app.modules.models.response_model import ClientException
@@ -9,12 +7,12 @@ from app.modules.models.response_model import ClientException
 router = APIRouter(prefix="/api/github", tags=["GitHub"])
 
 @router.get("/exists")
-async def check_repo_exists(repo_owner: str, repo_name: str):
+async def check_repo_exists(repo_owner: str, repo_name: str, api_key: str):
     """
     Check if a GitHub repository exists.
     """
     try:
-        exists = await ApiClient("GitHub", GITHUB_TOKEN).exists(repo_owner, repo_name)
+        exists = await ApiClient("GitHub", api_key).exists(repo_owner, repo_name)
         if not exists:
             raise HTTPException(status_code=404, detail="Repository not found")
         
