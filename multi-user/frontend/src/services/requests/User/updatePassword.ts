@@ -6,7 +6,7 @@ type updatePasswordProps = {
 export const useUpdatePassword = ({ password }: updatePasswordProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/users/password",
+      path: "/users/password",
       method: "PUT",
       body: JSON.stringify({ password }),
     },

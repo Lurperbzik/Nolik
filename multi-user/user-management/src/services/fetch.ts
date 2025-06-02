@@ -1,13 +1,19 @@
 import fetch, { RequestInit } from "node-fetch";
 import { HttpException } from "../model/exception";
+import dotenv from "dotenv";
+dotenv.config();
+
+const host = process.env.CORE_HOST;
+const port = process.env.CORE_PORT;
 
 export interface FetchProps {
-  url: string;
+  path: string;
   method: string;
   body?: string;
 }
 export const fetchData = async (data: FetchProps) => {
-  const { url, method, body } = data;
+  const { path, method, body } = data;
+  const url = `http://${host}:${port}${path}`;
 
   const options: RequestInit = {
     method,

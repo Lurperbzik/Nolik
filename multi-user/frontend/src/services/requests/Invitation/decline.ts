@@ -17,7 +17,7 @@ export const useDeclineInvitation = ({
   }
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/invitations/decline",
+      path: "/invitations/decline",
       method: "POST",
       body: JSON.stringify(invitation),
     },

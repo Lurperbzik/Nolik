@@ -102,7 +102,7 @@ export class UserManager {
     }
   }
 
-  public async getAll(): Promise<UserResponse[]> {
+  public getAll(): UserResponse[] {
     return Array.from(this.usersCache.values());
   }
 

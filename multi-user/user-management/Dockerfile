@@ -1,5 +1,5 @@
 # Etapa 1: Compilación
-FROM node:23-slim AS build
+FROM node:24-slim AS build
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm run tsc
 
-FROM node:23-slim
+FROM node:24-slim
 
 WORKDIR /app
 

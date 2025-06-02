@@ -11,7 +11,7 @@ export const useCreateCollection = ({ name, owner }: Props) => {
   const url = getGitHubCollection(name, owner, platform);
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/collections",
+      path: "/collections",
       method: "POST",
       body: JSON.stringify({
         name: name,

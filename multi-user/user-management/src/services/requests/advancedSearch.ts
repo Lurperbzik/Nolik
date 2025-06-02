@@ -12,11 +12,11 @@ export interface AdvacedSearchProps {
 }
 
 export const advancedSearch = async (options: AdvacedSearchProps) => {
-  const url = "http://localhost:8000/api/advanced-issue-similarity";
+  const path = "/api/advanced-issue-similarity";
   const method = "POST";
   const body = JSON.stringify(options);
   try {
-    const response = await fetchData({ url, method, body });
+    const response = await fetchData({ path, method, body });
     return response;
   } catch (error) {
     if (error instanceof HttpException) {

@@ -8,7 +8,7 @@ type getCollectionsProps = {
 export const useGetCollections = ({ setCollections }: getCollectionsProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/collections",
+      path: "/collections",
       method: "GET",
     },
     setData: setCollections,

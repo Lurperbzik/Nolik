@@ -13,7 +13,7 @@ export const useAdvancedSearchIssues = ({
 }: useAdvancedSearchIssuesProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/search/advanced-issue-similarity",
+      path: "/search/advanced-issue-similarity",
       method: "POST",
       body: JSON.stringify({
         collection_url: params.url,

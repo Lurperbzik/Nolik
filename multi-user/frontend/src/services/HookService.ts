@@ -1,8 +1,10 @@
 import { useState } from "react";
+const host = import.meta.env.VITE_USER_MANAGEMENT_HOST;
+const port = import.meta.env.VITE_USER_MANAGEMENT_PORT;
 
 type HookServiceProps = {
   request: {
-    url: string;
+    path: string;
     method: string;
     body?: string;
   };
@@ -20,7 +22,8 @@ export const HookService = (data: HookServiceProps) => {
     setError(false);
 
     try {
-      const response = await fetch(data.request.url, {
+      const url = `http://${host}:${port}${data.request.path}`;
+      const response = await fetch(url, {
         method: data.request.method,
         headers: {
           "Content-Type": "application/json",

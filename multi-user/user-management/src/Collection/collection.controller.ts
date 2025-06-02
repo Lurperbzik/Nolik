@@ -64,17 +64,26 @@ export const createCollection = async (req: CustomRequest, res: any) => {
   collection.ownerId = parseInt(userId);
   collection.status = "loading";
   try {
+    const exists = Array.from(manager.getAll().values()).some((collections) =>
+      collections.some((c) => c.url === collection.url)
+    );
+
     await manager.create(collection);
     await socket.onCreateCollection(userId);
-    try {
-      await createCollectionService(collection, apiKey);
-    } catch (err: any) {
-      if (err instanceof HttpException) {
-        res.status(err.statusCode).json({ error: err.message });
-        return;
-      } else {
-        res.status(500).json({ error: "Unknown error" });
-        return;
+    if (!exists) {
+      try {
+        await createCollectionService(collection, apiKey);
+      } catch (err: any) {
+        if (err instanceof HttpException) {
+          const updatedCollections: Map<number, Collection[]> =
+            await manager.delete({ collection, userId: parseInt(userId) });
+          await socket.onDeleteCollection(updatedCollections);
+          res.status(err.statusCode).json({ error: err.message });
+          return;
+        } else {
+          res.status(500).json({ error: "Unknown error" });
+          return;
+        }
       }
     }
     collection.status = "completed";
@@ -108,10 +117,7 @@ export const deleteCollection = async (req: CustomRequest, res: any) => {
       collection,
       userId: parseInt(userId),
     });
-    const allCollections = await manager.getAll();
-    const exists = Array.from(allCollections.values()).some((collections) =>
-      collections.some((c) => c.url === collection.url)
-    );
+    const exists = manager.getByUrlFromDB({ url: collection.url });
 
     if (!exists) {
       await deleteCollectionService(collection.url);

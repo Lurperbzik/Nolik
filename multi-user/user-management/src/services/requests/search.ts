@@ -2,7 +2,7 @@ import { fetchData } from "../fetch";
 import { HttpException } from "../../model/exception";
 
 export const search = async (collectionUrl: string, issue: string) => {
-  const url = "http://localhost:8000/api/issue-similarity";
+  const path = "/api/issue-similarity";
   const method = "POST";
   const body = JSON.stringify({
     collection_url: collectionUrl,
@@ -10,7 +10,7 @@ export const search = async (collectionUrl: string, issue: string) => {
   });
 
   try {
-    const response = await fetchData({ url, method, body });
+    const response = await fetchData({ path, method, body });
     return response;
   } catch (error) {
     if (error instanceof HttpException) {

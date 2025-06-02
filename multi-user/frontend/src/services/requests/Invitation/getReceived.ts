@@ -10,7 +10,7 @@ export const useGetReceivedInvitations = ({
 }: getInvitationsProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/invitations/received",
+      path: "/invitations/received",
       method: "GET",
     },
     setData: setReceivedInvitations,

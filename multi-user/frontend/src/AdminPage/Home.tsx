@@ -1,75 +1,61 @@
 import { useState } from "react";
-import {
-  IconCalendarStats,
-  IconDeviceDesktopAnalytics,
-  IconFingerprint,
-  IconGauge,
-  IconHome2,
-  IconLogout,
-  IconSettings,
-  IconSwitchHorizontal,
-  IconUser,
-} from "@tabler/icons-react";
-import { Center, Stack, Tooltip, UnstyledButton } from "@mantine/core";
-import classes from "./NavbarMinimalColored.module.css";
+import { AppShell, Burger, Group } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { useColors } from "../theme/theme.context";
+import { Main } from "./Main";
+import { NavAdmin } from "./Nav";
 
-interface NavbarLinkProps {
-  icon: typeof IconHome2;
-  label: string;
-  active?: boolean;
-  onClick?: () => void;
-}
+export function Home() {
+  const { colors } = useColors();
+  const [opened, setOpened] = useState(false);
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   return (
-    <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-      <UnstyledButton
-        onClick={onClick}
-        className={classes.link}
-        data-active={active || undefined}
+    <AppShell
+      style={{ height: "100vh" }}
+      header={{ height: isMobile ? 60 : 0 }}
+      navbar={{
+        width: 300,
+        breakpoint: "sm",
+        collapsed: { mobile: !opened },
+      }}
+      padding="md"
+    >
+      {isMobile && (
+        <AppShell.Header style={{ backgroundColor: colors.backgroundPrimary }}>
+          <Group h="100%" px="md">
+            <Burger
+              opened={opened}
+              onClick={() => setOpened((o) => !o)}
+              hiddenFrom="sm"
+              size="sm"
+            />
+          </Group>
+        </AppShell.Header>
+      )}
+      <AppShell.Navbar
+        style={{
+          backgroundColor: colors.backgroundPrimary,
+          overflow: "auto",
+          scrollbarWidth: "thin",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        p="md"
       >
-        <Icon size={20} stroke={1.5} />
-      </UnstyledButton>
-    </Tooltip>
-  );
-}
-
-const mockdata = [
-  { icon: IconHome2, label: "Home" },
-  { icon: IconGauge, label: "Dashboard" },
-  { icon: IconDeviceDesktopAnalytics, label: "Analytics" },
-  { icon: IconCalendarStats, label: "Releases" },
-  { icon: IconUser, label: "Account" },
-  { icon: IconFingerprint, label: "Security" },
-  { icon: IconSettings, label: "Settings" },
-];
-
-export function NavbarMinimalColored() {
-  const [active, setActive] = useState(2);
-
-  const links = mockdata.map((link, index) => (
-    <NavbarLink
-      {...link}
-      key={link.label}
-      active={index === active}
-      onClick={() => setActive(index)}
-    />
-  ));
-
-  return (
-    <nav className={classes.navbar}>
-      <Center></Center>
-
-      <div className={classes.navbarMain}>
-        <Stack justify="center" gap={0}>
-          {links}
-        </Stack>
-      </div>
-
-      <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconSwitchHorizontal} label="Change account" />
-        <NavbarLink icon={IconLogout} label="Logout" />
-      </Stack>
-    </nav>
+        <NavAdmin />
+      </AppShell.Navbar>
+      <AppShell.Main
+        style={{
+          height: "100%",
+          overflow: "auto",
+          scrollbarWidth: "thin",
+          backgroundColor: colors.backgroundSecondary,
+        }}
+      >
+        <Main />
+      </AppShell.Main>
+    </AppShell>
   );
 }

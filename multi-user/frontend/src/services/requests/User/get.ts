@@ -8,7 +8,7 @@ type getUsersProps = {
 export const useGetUsers = ({ setUsers }: getUsersProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/users",
+      path: "/users",
       method: "GET",
     },
     setData: setUsers,

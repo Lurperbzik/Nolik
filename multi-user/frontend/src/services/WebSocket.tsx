@@ -4,12 +4,14 @@ import { useAuthContext } from "../context/auth/AuthContext";
 import { Collection } from "../models/Collection";
 import { Invitation } from "../models/Invitation";
 import { User } from "../models/User";
+const host = import.meta.env.VITE_USER_MANAGEMENT_HOST;
+const port = import.meta.env.VITE_USER_MANAGEMENT_PORT;
 
 interface WebSocketListenerProps {
-  setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
-  setSentInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
-  setReceivedInvitations: React.Dispatch<React.SetStateAction<Invitation[]>>;
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  setCollections?: React.Dispatch<React.SetStateAction<Collection[]>>;
+  setSentInvitations?: React.Dispatch<React.SetStateAction<Invitation[]>>;
+  setReceivedInvitations?: React.Dispatch<React.SetStateAction<Invitation[]>>;
+  setUsers?: React.Dispatch<React.SetStateAction<User[]>>;
   children?: React.ReactNode;
 }
 
@@ -26,7 +28,7 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
   useEffect(() => {
     if (!isAuthenticated || !token || socketRef.current) return;
 
-    const socket = io("http://localhost:3000", {
+    const socket = io(`http://${host}:${port}`, {
       auth: { token },
       transports: ["websocket"],
     });
@@ -35,13 +37,20 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
 
     socket.on("connect", () => {});
 
-    socket.on("collections", (payload: Collection[]) => {
-      setCollections(payload);
-    });
-
-    socket.on("sentInvitations", setSentInvitations);
-    socket.on("receivedInvitations", setReceivedInvitations);
-    socket.on("users", setUsers);
+    if (setCollections) {
+      socket.on("collections", (payload: Collection[]) => {
+        setCollections(payload);
+      });
+    }
+    if (setSentInvitations) {
+      socket.on("sentInvitations", setSentInvitations);
+    }
+    if (setReceivedInvitations) {
+      socket.on("receivedInvitations", setReceivedInvitations);
+    }
+    if (setUsers) {
+      socket.on("users", setUsers);
+    }
 
     socket.on("connect_error", () => {});
 

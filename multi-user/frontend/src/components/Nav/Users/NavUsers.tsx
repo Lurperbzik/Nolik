@@ -1,6 +1,6 @@
 import { NavBarItem, Header } from "../Nav";
-import { FaUserCircle } from "react-icons/fa"; // header icon
-import { PiUserCirclePlus } from "react-icons/pi"; // left icon
+import { FaUserCircle } from "react-icons/fa";
+import { PiUserCirclePlus } from "react-icons/pi";
 import { IconType } from "react-icons";
 import { User } from "../../../models/User";
 

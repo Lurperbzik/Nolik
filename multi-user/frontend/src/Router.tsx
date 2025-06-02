@@ -3,7 +3,8 @@ import { HomePage } from "./pages/Home.page";
 import { LoginPage } from "./pages/Login.page";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { AdminRoute } from "./pages/AdminRoute";
-import { Button } from "@mantine/core";
+import { Home } from "./AdminPage/Home";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <AdminRoute>
-        <Button />
+        <Home />
       </AdminRoute>
     ),
   },

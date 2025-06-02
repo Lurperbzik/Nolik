@@ -8,7 +8,7 @@ type createInvitationProps = {
 export const useCreateInvitation = ({ invitation }: createInvitationProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/invitations",
+      path: "/invitations",
       method: "POST",
       body: JSON.stringify(invitation),
     },

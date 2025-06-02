@@ -6,7 +6,7 @@ type updateApiKeyProps = {
 export const useUpdateApiKey = ({ apiKey }: updateApiKeyProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/users/api-key",
+      path: "/users/api-key",
       method: "PUT",
       body: JSON.stringify({ apiKey }),
     },

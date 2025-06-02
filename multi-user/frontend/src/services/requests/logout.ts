@@ -3,7 +3,7 @@ import { HookService } from "../HookService";
 export const useLogout = () => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/auth/logout",
+      path: "/auth/logout",
       method: "POST",
     },
   });

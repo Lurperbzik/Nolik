@@ -5,13 +5,28 @@ import { UserManager } from "../User/user.manager";
 import { CustomRequest } from "../middleware/auth";
 import { authenticate } from "../middleware/auth";
 import { CollectionManager } from "../Collection/collection.manager";
+import { NextFunction } from "express";
 
 const router = Router();
 
-router.get("/exists", authenticate, async (req: CustomRequest, res) => {
+export const getGitHubRepoService = async (
+  req: CustomRequest,
+  res: any,
+  next: NextFunction
+) => {
+  let repoOwner = undefined;
+  let repoName = undefined;
   const { repo_owner, repo_name } = req.query;
+  if (!repo_owner || !repo_name) {
+    const { name, owner } = req.body;
+    repoOwner = owner;
+    repoName = name;
+  } else {
+    repoOwner = repo_owner;
+    repoName = repo_name;
+  }
   const userId = req.user;
-  if (!repo_owner || !repo_name || !userId) {
+  if (!repoOwner || !repoName || !userId) {
     return res.status(400).json({ message: "Missing parameters" });
   }
   const apiKey = await UserManager.getInstance().getApiKeyById(
@@ -24,14 +39,14 @@ router.get("/exists", authenticate, async (req: CustomRequest, res) => {
   const collections = await CollectionManager.getInstance().getByUserId({
     userId: parseInt(userId),
   });
-  if (collections.some((c) => c.owner === repo_owner && c.name === repo_name)) {
+  if (collections.some((c) => c.owner === repoOwner && c.name === repoName)) {
     return res
       .status(400)
       .json({ message: "Repository already exists in collections" });
   }
-  checkGitHubRepoService(repo_owner as string, repo_name as string, apiKey)
+  await checkGitHubRepoService(repoOwner as string, repoName as string, apiKey)
     .then(() => {
-      res.status(200).json({ message: "Repository exists" });
+      next();
     })
     .catch((error) => {
       if (error instanceof HttpException) {
@@ -40,6 +55,15 @@ router.get("/exists", authenticate, async (req: CustomRequest, res) => {
         res.status(500).json({ error: "Unknown error" });
       }
     });
-});
+};
+
+router.get(
+  "/exists",
+  authenticate,
+  getGitHubRepoService,
+  async (req: CustomRequest, res) => {
+    res.status(200).json({ message: "Repository exists" });
+  }
+);
 
 export default router;

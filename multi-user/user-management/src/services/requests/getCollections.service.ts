@@ -10,10 +10,10 @@ export interface CollectionService {
 }
 
 export const getCollectionsService = async (): Promise<CollectionService[]> => {
-  const url = "http://localhost:8000/api/collections";
+  const path = "/api/collections";
   const method = "GET";
   try {
-    const response = await fetchData({ url, method });
+    const response = await fetchData({ path, method });
     return response as CollectionService[];
   } catch (error) {
     if (error instanceof HttpException) {

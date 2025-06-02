@@ -4,13 +4,13 @@ import { HttpException } from "../../model/exception";
 export const deleteCollectionService = async (
   collection_url: string
 ): Promise<null> => {
-  const url = "http://localhost:8000/api/collections";
+  const path = "/api/collections";
   const method = "DELETE";
   try {
     const body = JSON.stringify({
       url: collection_url,
     });
-    await fetchData({ url, method, body });
+    await fetchData({ path, method, body });
     return null;
   } catch (error) {
     if (error instanceof HttpException) {

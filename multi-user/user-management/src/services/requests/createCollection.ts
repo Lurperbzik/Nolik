@@ -13,14 +13,14 @@ export const createCollectionService = async (
   collection: Collection,
   apiKey: string | null
 ): Promise<null> => {
-  const url = "http://localhost:8000/api/collection";
+  const path = "/api/collection";
   const method = "POST";
   try {
     const body = JSON.stringify({
       ...collection,
       api_key: apiKey,
     });
-    await fetchData({ url, method, body });
+    await fetchData({ path, method, body });
     return null;
   } catch (error) {
     if (error instanceof HttpException) {

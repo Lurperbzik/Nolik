@@ -45,9 +45,6 @@ export class CollectionManager {
     collection: Collection;
     userId: number;
   }): Promise<Map<number, Collection[]>> {
-    // Deletes a collection
-    // Returns user collections that have been modified
-
     if (!collection) {
       throw new HttpException("Collection not found", 404);
     }
@@ -60,12 +57,16 @@ export class CollectionManager {
         this.collectionsCache.forEach((collections, key) => {
           if (
             collections.some(
-              (c) => c.url === collection.url && c.owner == collection.owner
+              (c) =>
+                c.url === collection.url && c.ownerId === collection.ownerId
             )
           ) {
             this.collectionsCache.set(
               key,
-              collections.filter((c) => c.url !== collection.url)
+              collections.filter(
+                (c) =>
+                  c.url !== collection.url && c.ownerId === collection.ownerId
+              )
             );
             updatedCollections.set(key, this.collectionsCache.get(key) || []);
           }
@@ -110,7 +111,7 @@ export class CollectionManager {
     }
   }
 
-  public async getAll(): Promise<Map<number, Collection[]>> {
+  public getAll(): Map<number, Collection[]> {
     return this.collectionsCache;
   }
 
@@ -169,6 +170,21 @@ export class CollectionManager {
         userId: String(userId),
       });
       this.collectionsCache.set(userId, collections);
+      return collections;
+    } catch (error: any) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(error.message, 500);
+    }
+  }
+
+  public async getByUrlFromDB({ url }: { url: string }): Promise<Collection[]> {
+    if (!url) {
+      throw new HttpException("URL is required", 400);
+    }
+    try {
+      const collections = await this.dao.getByUrl({ url });
       return collections;
     } catch (error: any) {
       if (error instanceof HttpException) {

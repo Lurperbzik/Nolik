@@ -17,7 +17,7 @@ export const useAcceptInvitation = ({
   }
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/invitations/accept",
+      path: "/invitations/accept",
       method: "POST",
       body: JSON.stringify(invitation),
     },

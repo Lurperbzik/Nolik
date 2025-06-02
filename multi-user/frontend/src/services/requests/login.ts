@@ -17,7 +17,7 @@ export const useLogin = ({
 }: useLoginProps) => {
   const { loading, error, request } = HookService({
     request: {
-      url: "http://localhost:3000/auth/login",
+      path: "/auth/login",
       method: "POST",
       body: JSON.stringify({
         username: username,

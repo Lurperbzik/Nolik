@@ -136,6 +136,33 @@ export class CollectionDao {
     }
   }
 
+  public async getByUrl({ url }: { url: string }): Promise<Collection[]> {
+    try {
+      const result = await pool.query(
+        `
+        SELECT * FROM collections 
+        WHERE url = $1
+        `,
+        [url]
+      );
+      if (result.rows.length > 0) {
+        return result.rows.map((row: any) => {
+          return new Collection({
+            id: row.id,
+            name: row.name,
+            owner: row.owner,
+            platform: row.platform,
+            url: row.url,
+            ownerId: row.owner_id,
+            status: row.status,
+          });
+        });
+      }
+      return [];
+    } catch (error: any) {
+      throw new HttpException(error.message, 500);
+    }
+  }
   public async getByUserId({
     userId,
   }: {
