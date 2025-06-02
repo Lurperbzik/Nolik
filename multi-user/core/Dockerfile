@@ -13,4 +13,4 @@ COPY ./app/models /code/app/models
 EXPOSE 8000 
 
 # Eliminar la opción --reload para producción
-CMD ["uvicorn", "app.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
