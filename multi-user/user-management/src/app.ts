@@ -8,6 +8,12 @@ import githubRouter from "./routes/github.routes";
 import searchRouter from "./routes/search.routes";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const host = process.env.FRONTEND_HOST;
+const port = process.env.FRONTEND_PORT;
 
 const app = express();
 
@@ -16,7 +22,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: `http://${host}:${port}`,
     credentials: true,
   })
 );

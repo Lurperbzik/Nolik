@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
+const host = import.meta.env.VITE_USER_MANAGEMENT_HOST;
+const port = import.meta.env.VITE_USER_MANAGEMENT_PORT;
 
 export default function AuthContextProvider({
   children,
@@ -13,7 +15,7 @@ export default function AuthContextProvider({
 
   const checkAuth = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:3000/auth/check-auth", {
+      const res = await fetch(`http://${host}:${port}/auth/check-auth`, {
         method: "GET",
         credentials: "include",
       });

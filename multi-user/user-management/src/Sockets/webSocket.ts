@@ -11,7 +11,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWTPRIVATEKEY || "defaultSecretKey";
+const JWT_SECRET = process.env.JWTPIVATEKEY || "defaultSecretKey";
+const host = process.env.FRONTEND_HOST;
+const port = process.env.FRONTEND_PORT;
 
 export const connectedUsers = new Map<number, Socket>();
 const collectionManager = CollectionManager.getInstance();
@@ -20,7 +22,7 @@ const invitationManager = InvitationManager.getInstance();
 export function setupWebSocket(server: http.Server) {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: `http://${host}:${port}`,
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },
