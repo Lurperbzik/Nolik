@@ -8,7 +8,7 @@ export const useDeleteCollection = ({ url }: useDeleteCollectionProps) => {
     request: {
       path: '/api/collections',
       method: 'DELETE',
-      body: JSON.stringify(url),
+      body: JSON.stringify({ url }),
     },
   });
 

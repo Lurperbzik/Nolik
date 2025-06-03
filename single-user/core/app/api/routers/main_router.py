@@ -100,7 +100,7 @@ async def get_advanced_issue_similarity(data: AdvancedSearchSchema):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-@router.post("/collection")
+@router.post("/collections")
 async def create_collection(collection_scheme: CollectionSchema):
     """
     Create a collection

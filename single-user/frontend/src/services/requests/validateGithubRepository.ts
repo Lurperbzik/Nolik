@@ -8,7 +8,7 @@ type Props = {
 export const useValidateRepository = ({ owner, name }: Props) => {
   const { loading, error, request } = HookService({
     request: {
-      path: `/github/exists?repo_owner=${encodeURIComponent(owner)}&repo_name=${encodeURIComponent(name)}`,
+      path: `/api/github/exists?repo_owner=${encodeURIComponent(owner)}&repo_name=${encodeURIComponent(name)}`,
       method: 'GET',
     },
   });

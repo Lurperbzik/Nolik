@@ -14,7 +14,7 @@ export const WebSocketListener: React.FC<WebSocketListenerProps> = ({
   children,
 }) => {
   useEffect(() => {
-    const uri = `http://${host}:${port}/api/websocket`;
+    const uri = `ws://${host}:${port}/api/websocket`;
 
     const socket = new WebSocket(uri);
 
