@@ -44,25 +44,13 @@
    cd nolik
    ```
 
-2. Crea tu archivo de configuración a partir del ejemplo (si el proyecto incluye uno):
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   y rellena las variables necesarias, por ejemplo el token de GitHub:
-
-   ```env
-   GITHUB_TOKEN=tu_token_de_github
-   ```
-
-3. Levanta todos los servicios (backend, frontend y Milvus):
+2. Levanta todos los servicios (backend, frontend y Milvus):
 
    ```bash
    docker-compose up -d
    ```
 
-4. Accede a la aplicación desde tu navegador (ajusta el puerto según tu configuración):
+3. Accede a la aplicación desde tu navegador (ajusta el puerto según tu configuración):
 
    ```
    http://localhost:3000
