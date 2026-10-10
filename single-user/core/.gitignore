@@ -1,5 +1,0 @@
-**/__pycache__/
-**/volumes/
-**/.pytest_cache/
-.venv
-.env
